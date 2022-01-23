@@ -14,6 +14,7 @@ namespace Game.Foundation.Providers {
         public GameObject formationPrefab;
         public GameObject formationHolderPointPrefab;
         public GameObject formationUnitPrefab;
+        public GameObject formationHolderPrefab;
 
         public override void InstallBindings()
         {
@@ -22,12 +23,16 @@ namespace Game.Foundation.Providers {
                 .FromComponentInNewPrefab(myNetworkPlayer)
             ;
             Container
-                .BindFactory<FormationUnitBehaviour, FormationUnitBehaviour.Factory>()
-                .FromComponentInNewPrefab(formationUnitPrefab)
+                .BindFactory<FormationHolderBehaviour, FormationHolderBehaviour.Factory>()
+                .FromComponentInNewPrefab(formationHolderPrefab)
             ;
             Container
                 .BindFactory<FormationHolderPointBehaviour, FormationHolderPointBehaviour.Factory>()
                 .FromComponentInNewPrefab(formationHolderPointPrefab)
+            ;
+            Container
+                .BindFactory<FormationUnitBehaviour, FormationUnitBehaviour.Factory>()
+                .FromComponentInNewPrefab(formationUnitPrefab)
             ;
             Container
                 .BindFactory<SpawnerBehaviour, SpawnerBehaviour.Factory>()

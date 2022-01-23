@@ -32,6 +32,8 @@ namespace Game.Components.Selections
 
         void Start()
         {
+            if (!isLocalPlayer) return;
+
             _camera = Camera.main;
             _startPosition = Vector2.zero;
             _endPosition = Vector2.zero;
@@ -39,8 +41,11 @@ namespace Game.Components.Selections
             DrawVisual();
         }
 
+        [ClientCallback]
         void Update()
         {
+            if (!isLocalPlayer) return;
+
             if(_myNetworkPlayer == null) {
                 _myNetworkPlayer = NetworkClient
                     .connection
@@ -68,6 +73,7 @@ namespace Game.Components.Selections
             }
         }
 
+        [Client]
         void DrawVisual()
         {
             Vector2 boxStart = _startPosition;
@@ -84,6 +90,8 @@ namespace Game.Components.Selections
             _boxVisual.sizeDelta = boxSize;
         }
 
+
+        [Client]
         void DrawSelection()
         {
             if(Input.mousePosition.x < _startPosition.x) {
@@ -103,6 +111,7 @@ namespace Game.Components.Selections
             }
         }
 
+        [Client]
         void SelectGameObjects()
         {
             foreach(var formationUnit in _myNetworkPlayer.GetMyFormationUnits())

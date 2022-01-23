@@ -13,14 +13,12 @@ namespace Game.Components.Formations
     [RequireComponent(typeof(AbstractSelectable))]
     public class FormationUnitBehaviour : NetworkBehaviour
     {
-        [HideInInspector] public Transform formationHolderPoint;
+        public Transform formationHolderPoint;
         public static event Action<FormationUnitBehaviour> ServerOnFormationUnitSpawned;
         public static event Action<FormationUnitBehaviour> ServerOnFormationUnitDespawned;
         public static event Action<FormationUnitBehaviour> AuthorityOnFormationUnitSpawned;
         public static event Action<FormationUnitBehaviour> AuthorityOnFormationUnitDespawned;
         NavigationBehaviour _navigationBehaviour;
-
-        #region Server
 
         public override void OnStartServer()
         {
@@ -32,14 +30,10 @@ namespace Game.Components.Formations
             ServerOnFormationUnitDespawned?.Invoke(this);
         }
 
-        #endregion
-
-        #region Client
-
         [Client]
         public override void OnStartClient()
         {
-            if(!isClientOnly || !hasAuthority) return;
+            _navigationBehaviour = GetComponent<NavigationBehaviour>();
 
             AuthorityOnFormationUnitSpawned?.Invoke(this);
         }
@@ -47,27 +41,25 @@ namespace Game.Components.Formations
         [Client]
         public override void OnStopClient()
         {
-            if(!isClientOnly || !hasAuthority) return;
-            
             AuthorityOnFormationUnitDespawned?.Invoke(this);
         }
 
-        [Client]
-        void Awake()
-        {
-            _navigationBehaviour = GetComponent<NavigationBehaviour>();
-        }
-
-        [Client]
+        [ClientCallback]
         void Update()
         {
-            if(!formationHolderPoint) return; 
+            if(!connectionToClient.isReady) return;
+            if(!hasAuthority) return;
+            if(!formationHolderPoint) return;
 
+            CmdSetDestination();
+        }
+
+        [Command]
+        private void CmdSetDestination()
+        {
             _navigationBehaviour.SetDestination(formationHolderPoint.position);
         }
 
         public class Factory : PlaceholderFactory<FormationUnitBehaviour> { }
-
-        #endregion
     }
 }

@@ -13,11 +13,12 @@ using Mirror;
 
 namespace Game.Components.Selections.Selectables
 {
-    public class SelectableGroup : MonoBehaviour, ISelectableGroup
+    public class SelectableGroup : NetworkBehaviour, ISelectableGroup
     {
         public bool isSelected = false;
         public List<AbstractSelectable> selectableList = new List<AbstractSelectable>();
 
+        [Command]
         public void SelectAll()
         {
             isSelected = true;
@@ -27,6 +28,7 @@ namespace Game.Components.Selections.Selectables
             }
         }
 
+        [Command]
         public void DeselectAll()
         {
             isSelected = false;

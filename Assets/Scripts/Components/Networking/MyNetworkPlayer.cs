@@ -12,24 +12,21 @@ namespace Game.Components.Networking
     {
         [SerializeField] private List<FormationUnitBehaviour> _myFormationUnits = new List<FormationUnitBehaviour>();
 
-        public List<FormationUnitBehaviour> GetMyFormationUnits()
-        {
-            return _myFormationUnits;
-        }
-
-        #region Server
+        [Server]
         public override void OnStartServer()
         {
             FormationUnitBehaviour.ServerOnFormationUnitSpawned += ServerHandleUnitSpawned;
             FormationUnitBehaviour.ServerOnFormationUnitDespawned += ServerHandleUnitDespawned;
         }
 
+        [Server]
         public override void OnStopServer()
         {
             FormationUnitBehaviour.ServerOnFormationUnitSpawned -= ServerHandleUnitSpawned;
             FormationUnitBehaviour.ServerOnFormationUnitDespawned -= ServerHandleUnitDespawned;
         }
 
+        [Server]
         private void ServerHandleUnitSpawned(FormationUnitBehaviour unit)
         {
             if(unit.connectionToClient.connectionId != connectionToClient.connectionId) return;
@@ -37,6 +34,7 @@ namespace Game.Components.Networking
             _myFormationUnits.Add(unit);
         }
 
+        [Server]
         private void ServerHandleUnitDespawned(FormationUnitBehaviour unit)
         {
             if(unit.connectionToClient.connectionId != connectionToClient.connectionId) return;
@@ -44,26 +42,21 @@ namespace Game.Components.Networking
             _myFormationUnits.Remove(unit);
         }
 
-        #endregion
-
-        #region Client
-
+        [Client]
         public override void OnStartClient()
         {
-            if(!isClientOnly) return;
-
             FormationUnitBehaviour.AuthorityOnFormationUnitSpawned += ServerHandleUnitSpawned;
             FormationUnitBehaviour.AuthorityOnFormationUnitDespawned += ServerHandleUnitDespawned;
         }
 
+        [Client]
         public override void OnStopClient()
         {
-            if(!isClientOnly) return;
-
             FormationUnitBehaviour.AuthorityOnFormationUnitSpawned -= ServerHandleUnitSpawned;
             FormationUnitBehaviour.AuthorityOnFormationUnitDespawned -= ServerHandleUnitDespawned;
         }
 
+        [Client]
         private void AuthorityHandleUnitSpawned(FormationUnitBehaviour unit)
         {
             if(!hasAuthority) return;
@@ -71,6 +64,7 @@ namespace Game.Components.Networking
             _myFormationUnits.Add(unit);
         }
 
+        [Client]
         private void AuthorityHandleUnitDespawned(FormationUnitBehaviour unit)
         {
             if(!hasAuthority) return;
@@ -78,7 +72,11 @@ namespace Game.Components.Networking
             _myFormationUnits.Remove(unit);
         }
 
-        #endregion
+        [Client]
+        public List<FormationUnitBehaviour> GetMyFormationUnits()
+        {
+            return _myFormationUnits;
+        }
 
         public class Factory : PlaceholderFactory<MyNetworkPlayer> { }
     }

@@ -17,8 +17,8 @@ namespace Game.Components.Formations
         public int unitAmount;
         public SelectableGroup selectableGroup;
         IFormation _formation;
-    
         [Inject] FormationUnitBehaviour.Factory _formationUnitFactory;
+        [Inject] FormationHolderBehaviour.Factory _formationHolderFactory;
         [Inject] FormationHolderPointBehaviour.Factory _formationHolderPointFactory;
 
         [Inject]
@@ -28,28 +28,45 @@ namespace Game.Components.Formations
             _formation = formation;
         }
 
-        void Awake()
+        [Client]
+        public override void OnStartClient()
         {
+            base.OnStartClient();
+
             selectableGroup = this.GetComponent<SelectableGroup>();
             // formationHolderBehaviour.formationBehaviour = this.GetComponent<FormationBehaviour>();
-        }
-
-        void Start()
-        {
             CmdSpawnFormationUnits();
         }
-        
-        #region Server;
 
         [Command]
         void CmdSpawnFormationUnits()
         {
+            RpcSpawnFormationUnits();
+        }
+
+        [ClientRpc]
+        private void RpcSpawnFormationUnits()
+        {
+            CreateFormationHolder();
+
             for (int unitNumber = 0; unitNumber < unitAmount; unitNumber++)
             {
                 CreateFormationUnit(
                     CreateFormationHolderPoint(unitNumber)
                 );
             }
+        } 
+
+        void CreateFormationHolder()
+        {
+            FormationHolderBehaviour formationHolder = _formationHolderFactory.Create();
+
+            NetworkServer.Spawn(formationHolder.transform.gameObject, connectionToClient);
+
+            formationHolderBehaviour = formationHolder;
+            formationHolder.formationBehaviour = this;
+            formationHolder.transform.position = transform.position;
+            formationHolder.transform.rotation = transform.rotation;
         }
 
         void CreateFormationUnit(Transform formationHolderPoint)
@@ -68,6 +85,7 @@ namespace Game.Components.Formations
             formationUnitSelectable.SetSelectableGroup(selectableGroup);
 
             formationUnit.transform.position = transform.position;
+            formationUnit.transform.rotation = transform.rotation;
             formationUnit.formationHolderPoint = formationHolderPoint.transform;
             // formationUnit.transform.parent = transform;
             unitList.Add(formationUnit.transform.gameObject);
@@ -81,13 +99,14 @@ namespace Game.Components.Formations
             );
 
             FormationHolderPointBehaviour formationHolderPoint = _formationHolderPointFactory.Create();
+
+            NetworkServer.Spawn(formationHolderPoint.transform.gameObject, connectionToClient);
+            
             formationHolderPoint.transform.position = positionList[unitNumber];
-            formationHolderPoint.transform.parent = formationHolderBehaviour.transform;
+            // formationHolderPoint.transform.parent = formationHolderBehaviour.transform;
 
             return formationHolderPoint.transform;
         }
-
-        #endregion
 
         public class Factory : PlaceholderFactory<FormationBehaviour> { }
     }

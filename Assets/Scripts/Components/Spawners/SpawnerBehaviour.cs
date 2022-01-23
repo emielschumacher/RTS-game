@@ -11,8 +11,7 @@ namespace Game.Components.Spawners
         [SerializeField] private Transform spawnPoint = null;
         [Inject] FormationBehaviour.Factory _formationFactory;
 
-        #region Client
-
+        [Client]
         public void OnPointerClick(PointerEventData eventData)
         {
             // if(eventData.button != PointerEventData.InputButton.Left) return;
@@ -21,10 +20,6 @@ namespace Game.Components.Spawners
 
             CmdSpawnUnit();
         }
-
-        #endregion 
-
-        #region Server;
 
         [Command]
         private void CmdSpawnUnit()
@@ -36,8 +31,6 @@ namespace Game.Components.Spawners
 
             NetworkServer.Spawn(instance.transform.gameObject, connectionToClient);
         }
-
-        #endregion
 
         public class Factory : PlaceholderFactory<SpawnerBehaviour> { }
     }

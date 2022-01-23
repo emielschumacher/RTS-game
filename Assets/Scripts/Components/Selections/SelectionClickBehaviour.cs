@@ -7,9 +7,10 @@ using Game.Components.Selections.Contracts;
 using Game.Components.Selections.Selectables;
 using Game.Components.Raycasts.Contracts;
 using Zenject;
+using Mirror;
 
 namespace Game.Components.Selections {
-    public class SelectionClickBehaviour : MonoBehaviour
+    public class SelectionClickBehaviour : NetworkBehaviour
     {
         LayerMask ground;
         ISelectionManager _selectionManager;
@@ -24,13 +25,17 @@ namespace Game.Components.Selections {
             _raycastMousePosition = raycastMousePosition;
         }
         
+        [ClientCallback]
         void Update()
         {
+            if (!isLocalPlayer) return;
+
             if(Mouse.current.leftButton.wasPressedThisFrame) {
                 HandleLeftClick();
             }
         }
 
+        [Command]
         private void HandleLeftClick() 
         {
             RaycastHit hit = _raycastMousePosition.GetRaycastHit();

@@ -6,11 +6,12 @@ using Game.Components.Events;
 using Game.Components.Navigations;
 using Game.Components.Navigations.Contracts;
 using Game.Components.Movements.Contracts;
+using Mirror;
 
 namespace Game.Components.Navigations
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public class NavigationBehaviour : MonoBehaviour
+    public class NavigationBehaviour : NetworkBehaviour
     {
         public bool fullTurning = true;
         public Vector3 lastPosition;
@@ -35,29 +36,33 @@ namespace Game.Components.Navigations
             _movementDetection = movementDetection;
         }
 
-        void Awake()
+        [Client]
+        public override void OnStartClient()
         {
-            _navMeshAgent = this.transform.GetComponent<NavMeshAgent>();
-        }
+            if(!hasAuthority) return;
 
-        void Start() {
+            _navMeshAgent = this.transform.GetComponent<NavMeshAgent>();
+            
             _navMeshAgent.Warp(transform.position);
 
             ConfigureNavMeshSettings();
         }
 
+        [ClientCallback]
         void FixedUpdate()
         {
             HandleMovement();
             HandleRotation();
         }
 
+        [Client]
         void ConfigureNavMeshSettings()
         {
             _navMeshAgent.updatePosition = false;
             _navMeshAgent.updateRotation = false;
         }
 
+        [Client]
         void HandleMovement()
         {
             CheckMovement();
@@ -69,6 +74,7 @@ namespace Game.Components.Navigations
             );
         }
 
+        [Client]
         void CheckMovement() {
             Vector3 dist = transform.position - lastPosition;
             float currentSpeed = dist.magnitude / Time.deltaTime;
@@ -79,6 +85,7 @@ namespace Game.Components.Navigations
             hasPathPending = _navigationPathPending.IsPathPending(_navMeshAgent);
         }
 
+        [Client]
         void HandleRotation()
         {
             if(!isMoving) return;
@@ -92,6 +99,7 @@ namespace Game.Components.Navigations
             );
         }
 
+        [Client]
         public void SetDestination(Vector3 destination)
         {
             // if(!NavMesh.SamplePosition(

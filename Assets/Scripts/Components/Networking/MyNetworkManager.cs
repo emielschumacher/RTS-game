@@ -15,13 +15,11 @@ namespace Game.Components.Networking
         {
             // base.OnServerAddPlayer(conn);
 
+            // Player
             Transform startPos = GetStartPosition();
-
             MyNetworkPlayer playerInstance = _myNetworkPlayer.Create();
 
             NetworkServer.Spawn(playerInstance.transform.gameObject, conn);
-
-            Debug.Log(playerInstance.transform.gameObject.name);
 
             playerInstance.transform.position = startPos.position;
             playerInstance.transform.rotation = startPos.rotation;
@@ -31,7 +29,6 @@ namespace Game.Components.Networking
 
             // Spawner
             SpawnerBehaviour spawnerInstance = _spawnerFactory.Create();
-
             spawnerInstance.transform.position = conn.identity.transform.position;
             spawnerInstance.transform.rotation = conn.identity.transform.rotation;
 
