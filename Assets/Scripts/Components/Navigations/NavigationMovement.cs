@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.AI;
-using Zenject;
 using Game.Components.Navigations;
 using Game.Components.Navigations.Contracts;
 using Game.Components.Movements;
@@ -12,18 +11,13 @@ namespace Game.Components.Navigations
     {
         ISmoothTargetMovement _smoothTargetMovement;
 
-        [Inject]
-        public void Construct(
-            ISmoothTargetMovement smoothTargetMovement
-        ) {
-            _smoothTargetMovement = smoothTargetMovement;
-        }
-
         public Vector3 Movement(
             Transform transform,
             NavMeshAgent navMeshAgent,
             float deltaTime
         ) {
+            _smoothTargetMovement = new SmoothTargetMovement();
+            
             return _smoothTargetMovement.Movement(
                 transform.position,
                 navMeshAgent.nextPosition,

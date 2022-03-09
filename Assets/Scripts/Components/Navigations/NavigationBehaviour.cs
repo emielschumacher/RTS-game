@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System;
-using Zenject;
 using Game.Components.Events;
 using Game.Components.Navigations;
 using Game.Components.Navigations.Contracts;
 using Game.Components.Movements.Contracts;
+using Game.Components.Movements;
 using Mirror;
 
 namespace Game.Components.Navigations
@@ -13,6 +13,7 @@ namespace Game.Components.Navigations
     [RequireComponent(typeof(NavMeshAgent))]
     public class NavigationBehaviour : NetworkBehaviour
     {
+        [SyncVar] Vector3 syncPosition;
         public bool fullTurning = true;
         public Vector3 lastPosition;
         public bool isMoving = false;
@@ -22,37 +23,44 @@ namespace Game.Components.Navigations
         INavigationMovement _navigationMovement;
         INavigationPathPending _navigationPathPending;
         IMovementDetection _movementDetection;
-        
-        [Inject]
-        public void Construct(
-            INavigationRotation navigationRotation,
-            INavigationMovement navigationMovement,
-            INavigationPathPending navigationPathPending,
-            IMovementDetection movementDetection
-        ) {
-            _navigationRotation = navigationRotation;
-            _navigationMovement = navigationMovement;
-            _navigationPathPending = navigationPathPending;
-            _movementDetection = movementDetection;
+
+        void Awake()
+        {
+            _navigationRotation = new NavigationRotation();
+            _navigationPathPending = new NavigationPathPending();
+            _movementDetection = new MovementDetection();
         }
 
-        [Client]
         public override void OnStartClient()
         {
-            if(!hasAuthority) return;
-
             _navMeshAgent = this.transform.GetComponent<NavMeshAgent>();
-            
+
             _navMeshAgent.Warp(transform.position);
 
             ConfigureNavMeshSettings();
         }
 
-        [ClientCallback]
-        void FixedUpdate()
+        // [Client]
+        // public override void OnStartClient()
+        // {
+        //     _navMeshAgent = this.transform.GetComponent<NavMeshAgent>();
+
+        //     _navMeshAgent.Warp(transform.position);
+
+        //     ConfigureNavMeshSettings();
+        // }
+
+        // public void Start()
+        // {
+        // }
+
+        void Update()
+        // void FixedUpdate()
         {
-            HandleMovement();
-            HandleRotation();
+            if (isClient && hasAuthority) {
+                HandleMovement();
+                HandleRotation();
+            }
         }
 
         [Client]
@@ -62,33 +70,44 @@ namespace Game.Components.Navigations
             _navMeshAgent.updateRotation = false;
         }
 
-        [Client]
+        [ClientCallback]
         void HandleMovement()
         {
-            CheckMovement();
-
-            transform.position = _navigationMovement.Movement(
-                transform,
-                _navMeshAgent,
-                Time.fixedDeltaTime
-            );
+            // CheckMovement();
+            CmdMovement(_navMeshAgent.nextPosition);
         }
 
-        [Client]
-        void CheckMovement() {
-            Vector3 dist = transform.position - lastPosition;
-            float currentSpeed = dist.magnitude / Time.deltaTime;
-            lastPosition = transform.position;
-            
-            isMoving = currentSpeed > 1f;
-
-            hasPathPending = _navigationPathPending.IsPathPending(_navMeshAgent);
+        [Command]
+        void CmdMovement(Vector3 nextPosition) {
+            RpcMovement(nextPosition);
         }
 
-        [Client]
-        void HandleRotation()
+        [ClientRpc]
+        void RpcMovement(Vector3 nextPosition)
         {
-            if(!isMoving) return;
+            transform.position = nextPosition;
+            // transform.position = _navigationMovement.Movement(
+            //     transform,
+            //     _navMeshAgent,
+            //     Time.fixedDeltaTime
+            // );
+        }
+
+        // [ClientCallback]
+        // void CheckMovement() {
+        //     Vector3 dist = transform.position - lastPosition;
+        //     float currentSpeed = dist.magnitude / Time.deltaTime;
+        //     lastPosition = transform.position;
+            
+        //     isMoving = currentSpeed > 1f;
+
+        //     hasPathPending = _navigationPathPending.IsPathPending(_navMeshAgent);
+        // }
+
+        [ClientCallback]
+        private void HandleRotation()
+        {
+            // if(!isMoving) return;
 
             transform.rotation = _navigationRotation.Rotation(
                 transform,

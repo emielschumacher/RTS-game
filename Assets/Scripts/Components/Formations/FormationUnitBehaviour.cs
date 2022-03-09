@@ -3,7 +3,6 @@ using UnityEngine;
 using System;
 using Game.Components.Navigations;
 using Game.Components.Navigations.Contracts;
-using Zenject;
 using Game.Components.Selections.Selectables;
 using Mirror;
 
@@ -47,19 +46,11 @@ namespace Game.Components.Formations
         [ClientCallback]
         void Update()
         {
-            if(!connectionToClient.isReady) return;
+            // if(!connectionToClient.isReady) return;
             if(!hasAuthority) return;
             if(!formationHolderPoint) return;
 
-            CmdSetDestination();
-        }
-
-        [Command]
-        private void CmdSetDestination()
-        {
             _navigationBehaviour.SetDestination(formationHolderPoint.position);
         }
-
-        public class Factory : PlaceholderFactory<FormationUnitBehaviour> { }
     }
 }

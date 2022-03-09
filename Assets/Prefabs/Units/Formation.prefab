@@ -31,6 +31,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 490.54, y: 0.5, z: 493.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -50,10 +51,11 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4093248041612398358}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -100,9 +102,11 @@ MonoBehaviour:
   syncInterval: 0.1
   unitList: []
   formationHolderBehaviour: {fileID: 0}
-  formationHolderPointPrefab: {fileID: 1946539531798393826, guid: 11e2e32e8b46d496a98b32c84a669dce, type: 3}
   unitAmount: 8
   selectableGroup: {fileID: 0}
+  formationHolderPrefab: {fileID: 2045134170546544998, guid: ecd1cec9022f941c3aa35d2a2e3a0d6f, type: 3}
+  formationUnitPrefab: {fileID: 7208542937895123769, guid: 2561c8b6266b04cb4af7d3a05527aa2a, type: 3}
+  formationHolderPointPrefab: {fileID: 1946539531798393826, guid: 11e2e32e8b46d496a98b32c84a669dce, type: 3}
 --- !u!114 &286889002
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.AI;
-using Zenject;
 using Game.Components.Navigations;
 using Game.Components.Navigations.Contracts;
 using Game.Components.Raycasts.Contracts;
+using Game.Components.Raycasts;
 using Game.Components.Events;
 using Game.Components.Events.Contracts;
 using Mirror;
@@ -17,11 +17,8 @@ namespace Game.Components.Navigations
         IRaycastMousePosition _raycastMousePosition;
         [SerializeField] Vector3Event onNewMarkerPositionEvent;
 
-        [Inject]
-        public void Construct(
-            IRaycastMousePosition raycastMousePosition
-        ) {
-            _raycastMousePosition = raycastMousePosition;
+        public void Awake() {
+            _raycastMousePosition = new RaycastMousePosition();
         }
 
         [ClientCallback]

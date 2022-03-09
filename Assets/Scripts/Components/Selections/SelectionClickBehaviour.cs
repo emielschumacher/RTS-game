@@ -6,7 +6,7 @@ using Game.Components.Selections;
 using Game.Components.Selections.Contracts;
 using Game.Components.Selections.Selectables;
 using Game.Components.Raycasts.Contracts;
-using Zenject;
+using Game.Components.Raycasts;
 using Mirror;
 
 namespace Game.Components.Selections {
@@ -16,13 +16,9 @@ namespace Game.Components.Selections {
         ISelectionManager _selectionManager;
         IRaycastMousePosition _raycastMousePosition;
 
-        [Inject]
-        public void Construct(
-            ISelectionManager selectionManager,
-            IRaycastMousePosition raycastMousePosition
-        ) {
-            _selectionManager = selectionManager;
-            _raycastMousePosition = raycastMousePosition;
+        public void Awake() {
+            _selectionManager = new SelectionManager();
+            _raycastMousePosition = new RaycastMousePosition();
         }
         
         [ClientCallback]

@@ -3,7 +3,7 @@ using UnityEngine.Events;
 using Game.Components.Raycasts;
 using Game.Components.Raycasts.Contracts;
 using Game.Components.Scenes.Contracts;
-using Zenject;
+using Game.Components.Scenes;
 
 namespace Game.Components.Raycasts
 {
@@ -11,11 +11,8 @@ namespace Game.Components.Raycasts
     {
         ISceneManager _sceneManager;
 
-        [Inject]
-        public void Construct(
-            ISceneManager sceneManager
-        ) {
-            _sceneManager = sceneManager;
+        public void Awake() {
+            _sceneManager = new SceneManager();
         }
 
         public RaycastHit GetRaycastHit()

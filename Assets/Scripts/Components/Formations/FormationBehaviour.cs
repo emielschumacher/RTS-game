@@ -4,7 +4,6 @@ using Game.Components.Formations;
 using Game.Components.Formations.Contracts;
 using Game.Components.Selections.Selectables.Contracts;
 using Game.Components.Selections.Selectables;
-using Zenject;
 using Mirror;
 
 namespace Game.Components.Formations
@@ -12,102 +11,108 @@ namespace Game.Components.Formations
     public class FormationBehaviour : NetworkBehaviour
     {
         public List<GameObject> unitList = new List<GameObject>();
-        public FormationHolderBehaviour formationHolderBehaviour;
-        public GameObject formationHolderPointPrefab;
+        [HideInInspector] public FormationHolderBehaviour formationHolderBehaviour;
         public int unitAmount;
-        public SelectableGroup selectableGroup;
+        [HideInInspector] public SelectableGroup selectableGroup;
         IFormation _formation;
-        [Inject] FormationUnitBehaviour.Factory _formationUnitFactory;
-        [Inject] FormationHolderBehaviour.Factory _formationHolderFactory;
-        [Inject] FormationHolderPointBehaviour.Factory _formationHolderPointFactory;
+        public GameObject formationHolderPrefab;
+        public GameObject formationUnitPrefab;
+        public GameObject formationHolderPointPrefab;
 
-        [Inject]
-        public void Construct(
-            IFormation formation
-        ) {
-            _formation = formation;
+        void Awake() {
+            _formation = new Formation();
         }
 
-        [Client]
-        public override void OnStartClient()
+        public void Start()
         {
             base.OnStartClient();
 
             selectableGroup = this.GetComponent<SelectableGroup>();
-            // formationHolderBehaviour.formationBehaviour = this.GetComponent<FormationBehaviour>();
+
             CmdSpawnFormationUnits();
         }
 
         [Command]
         void CmdSpawnFormationUnits()
         {
-            RpcSpawnFormationUnits();
-        }
-
-        [ClientRpc]
-        private void RpcSpawnFormationUnits()
-        {
-            CreateFormationHolder();
+            SpawnFormationHolder();
 
             for (int unitNumber = 0; unitNumber < unitAmount; unitNumber++)
             {
-                CreateFormationUnit(
-                    CreateFormationHolderPoint(unitNumber)
-                );
+                SpawnFormationUnit(unitNumber);
             }
-        } 
+        }
 
-        void CreateFormationHolder()
+        void SpawnFormationHolder()
         {
-            FormationHolderBehaviour formationHolder = _formationHolderFactory.Create();
+            GameObject formationHolder = Instantiate(
+                formationHolderPrefab,
+                transform.position,
+                transform.rotation
+            );
 
             NetworkServer.Spawn(formationHolder.transform.gameObject, connectionToClient);
 
-            formationHolderBehaviour = formationHolder;
-            formationHolder.formationBehaviour = this;
-            formationHolder.transform.position = transform.position;
-            formationHolder.transform.rotation = transform.rotation;
+            RpcInitSpawnedFormationHolder(formationHolder);
         }
 
-        void CreateFormationUnit(Transform formationHolderPoint)
+        [ClientRpc]
+        void RpcInitSpawnedFormationHolder(GameObject formationHolder)
         {
-            FormationUnitBehaviour formationUnit = _formationUnitFactory.Create();
+            formationHolder.GetComponent<FormationHolderBehaviour>().formationBehaviour = this;
+            
+            formationHolderBehaviour = formationHolder.GetComponent<FormationHolderBehaviour>();
+        }
+
+        void SpawnFormationUnit(int unitNumber)
+        {
+            Transform formationHolderPoint = SpawnFormationHolderPoint(unitNumber);
+
+            GameObject formationUnit = Instantiate(
+                formationUnitPrefab,
+                transform.position,
+                transform.rotation
+            );
 
             NetworkServer.Spawn(formationUnit.transform.gameObject, connectionToClient);
 
-            formationUnit.GetComponent<NetworkIdentity>().AssignClientAuthority(connectionToClient);
+            RpcInitSpawnedFormationUnit(formationUnit, formationHolderPoint.gameObject);
+        }
 
+        [ClientRpc]
+        void RpcInitSpawnedFormationUnit(GameObject formationUnit, GameObject formationHolderPoint)
+        {
             SelectableFormationUnit formationUnitSelectable = formationUnit.GetComponent<SelectableFormationUnit>();
 
-            // Change this so this will also set for clients instead of server only!
-            // Maybe add NetworkBehaviour?
-            // NOTE: To execute code on the server, you must use commands!!! that is it.
             formationUnitSelectable.SetSelectableGroup(selectableGroup);
 
-            formationUnit.transform.position = transform.position;
-            formationUnit.transform.rotation = transform.rotation;
-            formationUnit.formationHolderPoint = formationHolderPoint.transform;
+            formationUnit.GetComponent<FormationUnitBehaviour>().formationHolderPoint = formationHolderPoint.transform;
             // formationUnit.transform.parent = transform;
             unitList.Add(formationUnit.transform.gameObject);
         }
 
-        Transform CreateFormationHolderPoint(int unitNumber)
+        Transform SpawnFormationHolderPoint(int unitNumber)
         {
             List<Vector3> positionList = _formation.GridFormation(
                 unitAmount,
                 transform.position
             );
 
-            FormationHolderPointBehaviour formationHolderPoint = _formationHolderPointFactory.Create();
+            GameObject formationHolderPoint = Instantiate(
+                formationHolderPointPrefab
+            );
+
+            formationHolderPoint.transform.position = positionList[unitNumber];
 
             NetworkServer.Spawn(formationHolderPoint.transform.gameObject, connectionToClient);
-            
-            formationHolderPoint.transform.position = positionList[unitNumber];
-            // formationHolderPoint.transform.parent = formationHolderBehaviour.transform;
 
             return formationHolderPoint.transform;
         }
 
-        public class Factory : PlaceholderFactory<FormationBehaviour> { }
+        [ClientRpc]
+        void InitSpawnedFormationHolderPoint(GameObject formationUnit)
+        {
+            
+        }
     }
 }

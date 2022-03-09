@@ -3,7 +3,6 @@ using UnityEngine.Events;
 using Game.Components.Selections;
 using Game.Components.Selections.Contracts;
 using Game.Components.Selections.Selectables.Contracts;
-using Zenject;
 using Mirror;
 
 namespace Game.Components.Selections.Selectables
@@ -34,9 +33,8 @@ namespace Game.Components.Selections.Selectables
             return _selectableGroup;
         }
 
-        [Command]
         public void SetSelectableGroup(SelectableGroup selectableGroup) {
-            selectableGroup.selectableList.Add(this);
+            // selectableGroup.selectableList.Add(this);
             
             _selectableGroup = selectableGroup;
         }

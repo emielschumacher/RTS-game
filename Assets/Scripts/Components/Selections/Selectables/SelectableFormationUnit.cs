@@ -7,7 +7,6 @@ using Game.Components.Navigations.Contracts;
 using Game.Components.Formations;
 using Game.Components.Formations.Contracts;
 using System.Collections.Generic;
-using Zenject;
 
 namespace Game.Components.Selections.Selectables
 {

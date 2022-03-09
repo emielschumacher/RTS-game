@@ -8,7 +8,6 @@ using Game.Components.Selections.Selectables.Contracts;
 using Game.Components.Scenes.Contracts;
 using Game.Components.Networking;
 using UnityEngine.InputSystem;
-using Zenject;
 using Mirror;
 
 namespace Game.Components.Selections
@@ -23,11 +22,8 @@ namespace Game.Components.Selections
         MyNetworkPlayer _myNetworkPlayer;
         ISelectionManager _selectionManager;
 
-        [Inject]
-        public void Construct(
-            ISelectionManager selectionManager
-        ) {
-            _selectionManager = selectionManager;
+        public void Awake() {
+            _selectionManager = new SelectionManager();
         }
 
         void Start()

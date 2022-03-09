@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 2045134170546545022}
   - component: {fileID: 2045134170014432945}
   - component: {fileID: 4848264298530336378}
+  - component: {fileID: -4474262415312427257}
   m_Layer: 7
   m_Name: FormationHolder
   m_TagString: Untagged
@@ -203,3 +204,32 @@ MonoBehaviour:
   visible: 0
   m_AssetId: ecd1cec9022f941c3aa35d2a2e3a0d6f
   hasSpawned: 0
+--- !u!114 &-4474262415312427257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045134170546544998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 0
+  sendInterval: 0.05
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 0
+  bufferTimeMultiplier: 1
+  bufferSizeLimit: 64
+  catchupThreshold: 4
+  catchupMultiplier: 0.1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}

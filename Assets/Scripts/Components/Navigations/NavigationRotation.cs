@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.AI;
-using Zenject;
 using Game.Components.Navigations;
 using Game.Components.Navigations.Contracts;
 using Game.Components.Rotations;
@@ -12,13 +11,6 @@ namespace Game.Components.Navigations
     {
         ISmoothTargetRotation _smoothTargetRotation;
 
-        [Inject]
-        public void Construct(
-            ISmoothTargetRotation smoothTargetRotation
-        ) {
-            _smoothTargetRotation = smoothTargetRotation;
-        }
-
         public Quaternion Rotation(
             Transform transform,
             NavMeshAgent navMeshAgent,
@@ -26,8 +18,13 @@ namespace Game.Components.Navigations
             float rotationSpeed = 5f,
             bool fullTurn = true
         ) {
+            _smoothTargetRotation = new SmoothTargetRotation();
+
             if(fullTurn == false) {
                 Vector3 direction = (navMeshAgent.nextPosition - transform.position).normalized;
+
+                if(direction == Vector3.zero) return transform.rotation;
+
                 Quaternion rotation = Quaternion.LookRotation(direction);
 
                 if(Vector3.Angle(direction, transform.forward) >= 90) {

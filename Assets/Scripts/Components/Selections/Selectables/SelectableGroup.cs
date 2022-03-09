@@ -8,7 +8,6 @@ using Game.Components.Navigations.Contracts;
 using Game.Components.Formations;
 using Game.Components.Formations.Contracts;
 using System.Collections.Generic;
-using Zenject;
 using Mirror;
 
 namespace Game.Components.Selections.Selectables

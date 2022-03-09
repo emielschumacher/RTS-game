@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Game.Components.Selections.Selectables;
 using Game.Components.Selections.Contracts;
 using Mirror;
-using Zenject;
 
 namespace Game.Components.Networking
 {
@@ -77,7 +76,5 @@ namespace Game.Components.Networking
         {
             return _myFormationUnits;
         }
-
-        public class Factory : PlaceholderFactory<MyNetworkPlayer> { }
     }
 }
