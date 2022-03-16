@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Mirror;
-using Game.Components.Formations;
 
 namespace Game.Components.Spawners
 {

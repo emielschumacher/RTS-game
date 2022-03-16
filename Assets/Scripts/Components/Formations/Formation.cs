@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Game.Components.Formations;
 using Game.Components.Formations.Contracts;
 
 namespace Game.Components.Formations
 {
-    public class Formation : IFormation
+    public class Formation : MonoBehaviour, IFormation
     {
         public List<Vector3> GridFormation(
             int unitAmount,

@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Game.Components.Formations;
-using Game.Components.Formations.Contracts;
 
 namespace Game.Components.Formations.Contracts
 {

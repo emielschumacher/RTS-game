@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Game.Components.Formations;
 using Game.Components.Formations.Contracts;
-using Game.Components.Selections.Selectables.Contracts;
 using Game.Components.Selections.Selectables;
 using Mirror;
 
@@ -10,21 +8,21 @@ namespace Game.Components.Formations
 {
     public class FormationBehaviour : NetworkBehaviour
     {
-        public List<GameObject> unitList = new List<GameObject>();
-        [HideInInspector] public FormationHolderBehaviour formationHolderBehaviour;
-        public int unitAmount;
-        [HideInInspector] public SelectableGroup selectableGroup;
-        IFormation _formation;
-        public GameObject formationHolderPrefab;
-        public GameObject formationUnitPrefab;
-        public GameObject formationHolderPointPrefab;
-
-        void Awake() {
-            _formation = new Formation();
-        }
+        private List<GameObject> _unitList = new List<GameObject>();
+        [SerializeField] private int _unitAmount = 6;
+        [SerializeField] private GameObject _formationHolderPrefab;
+        [SerializeField] private GameObject _formationUnitPrefab;
+        [SerializeField] private GameObject _formationHolderPointPrefab;
+        public SelectableGroup selectableGroup { get; private set; }
+        private FormationHolderBehaviour _formationHolderBehaviour;
+        private IFormation _formation = null;
 
         public void Start()
         {
+            _formation = this.GetComponent<IFormation>();
+
+            if (!hasAuthority || !isClient) return;
+
             base.OnStartClient();
 
             selectableGroup = this.GetComponent<SelectableGroup>();
@@ -37,7 +35,7 @@ namespace Game.Components.Formations
         {
             SpawnFormationHolder();
 
-            for (int unitNumber = 0; unitNumber < unitAmount; unitNumber++)
+            for (int unitNumber = 0; unitNumber < _unitAmount; unitNumber++)
             {
                 SpawnFormationUnit(unitNumber);
             }
@@ -46,22 +44,17 @@ namespace Game.Components.Formations
         void SpawnFormationHolder()
         {
             GameObject formationHolder = Instantiate(
-                formationHolderPrefab,
+                _formationHolderPrefab,
                 transform.position,
                 transform.rotation
             );
 
-            NetworkServer.Spawn(formationHolder.transform.gameObject, connectionToClient);
+            NetworkServer.Spawn(
+                formationHolder.transform.gameObject,
+                connectionToClient
+            );
 
             RpcInitSpawnedFormationHolder(formationHolder);
-        }
-
-        [ClientRpc]
-        void RpcInitSpawnedFormationHolder(GameObject formationHolder)
-        {
-            formationHolder.GetComponent<FormationHolderBehaviour>().formationBehaviour = this;
-            
-            formationHolderBehaviour = formationHolder.GetComponent<FormationHolderBehaviour>();
         }
 
         void SpawnFormationUnit(int unitNumber)
@@ -69,14 +62,48 @@ namespace Game.Components.Formations
             Transform formationHolderPoint = SpawnFormationHolderPoint(unitNumber);
 
             GameObject formationUnit = Instantiate(
-                formationUnitPrefab,
+                _formationUnitPrefab,
                 transform.position,
                 transform.rotation
             );
 
-            NetworkServer.Spawn(formationUnit.transform.gameObject, connectionToClient);
+            NetworkServer.Spawn(
+                formationUnit.transform.gameObject,
+                connectionToClient
+            );
 
-            RpcInitSpawnedFormationUnit(formationUnit, formationHolderPoint.gameObject);
+            RpcInitSpawnedFormationUnit(
+                formationUnit,
+                formationHolderPoint.gameObject
+            );
+        }
+
+        Transform SpawnFormationHolderPoint(int unitNumber)
+        {
+            List<Vector3> positionList = _formation.GridFormation(
+                _unitAmount,
+                transform.position
+            );
+
+            GameObject formationHolderPoint = Instantiate(
+                _formationHolderPointPrefab
+            );
+
+            formationHolderPoint.transform.position = positionList[unitNumber];
+
+            NetworkServer.Spawn(
+                formationHolderPoint.transform.gameObject, connectionToClient
+            );
+
+            return formationHolderPoint.transform;
+        }
+
+        [ClientRpc]
+        void RpcInitSpawnedFormationHolder(GameObject formationHolder)
+        {
+            formationHolder.GetComponent<FormationHolderBehaviour>().formationBehaviour = this;
+
+            _formationHolderBehaviour = formationHolder.GetComponent<FormationHolderBehaviour>();
         }
 
         [ClientRpc]
@@ -85,34 +112,8 @@ namespace Game.Components.Formations
             SelectableFormationUnit formationUnitSelectable = formationUnit.GetComponent<SelectableFormationUnit>();
 
             formationUnitSelectable.SetSelectableGroup(selectableGroup);
-
             formationUnit.GetComponent<FormationUnitBehaviour>().formationHolderPoint = formationHolderPoint.transform;
-            // formationUnit.transform.parent = transform;
-            unitList.Add(formationUnit.transform.gameObject);
-        }
-
-        Transform SpawnFormationHolderPoint(int unitNumber)
-        {
-            List<Vector3> positionList = _formation.GridFormation(
-                unitAmount,
-                transform.position
-            );
-
-            GameObject formationHolderPoint = Instantiate(
-                formationHolderPointPrefab
-            );
-
-            formationHolderPoint.transform.position = positionList[unitNumber];
-
-            NetworkServer.Spawn(formationHolderPoint.transform.gameObject, connectionToClient);
-
-            return formationHolderPoint.transform;
-        }
-
-        [ClientRpc]
-        void InitSpawnedFormationHolderPoint(GameObject formationUnit)
-        {
-            
+            _unitList.Add(formationUnit.transform.gameObject);
         }
     }
 }

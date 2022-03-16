@@ -1,9 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
 using Game.Components.Navigations;
-using Game.Components.Navigations.Contracts;
-using Game.Components.Selections.Selectables;
-using Game.Components.Selections;
 using Mirror;
 
 namespace Game.Components.Formations
@@ -12,7 +8,7 @@ namespace Game.Components.Formations
     public class FormationHolderBehaviour : NetworkBehaviour
     {
         [HideInInspector] public FormationBehaviour formationBehaviour;
-        NavigationBehaviour _navigationBehaviour;
+        private NavigationBehaviour _navigationBehaviour;
 
         [Client]
         public override void OnStartClient()
@@ -23,8 +19,6 @@ namespace Game.Components.Formations
         [Client]
         public void SetDestination(Vector3 destination)
         {
-            // if (!isLocalPlayer || !hasAuthority) return;
-            
             if(formationBehaviour.selectableGroup.isSelected == true) {
                 _navigationBehaviour.SetDestination(destination);
             }
