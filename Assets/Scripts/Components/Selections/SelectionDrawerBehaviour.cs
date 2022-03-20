@@ -1,56 +1,49 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Game.Components.Selections;
 using Game.Components.Selections.Contracts;
 using Game.Components.Selections.Selectables;
-using Game.Components.Selections.Selectables.Contracts;
-using Game.Components.Scenes.Contracts;
 using Game.Components.Networking;
 using UnityEngine.InputSystem;
 using Mirror;
 
 namespace Game.Components.Selections
 {
-    public class SelectionDrawerBehaviour : NetworkBehaviour
+    public class SelectionDrawerBehaviour : MonoBehaviour
     {
         Camera _camera;
         [SerializeField] RectTransform _boxVisual;
         Rect _selectionBox;
         Vector2 _startPosition;
         Vector2 _endPosition;
-        MyNetworkPlayer _myNetworkPlayer;
         ISelectionManager _selectionManager;
-
-        public void Awake() {
-            _selectionManager = new SelectionManager();
-        }
+        MyNetworkPlayer _myNetworkPlayer;
 
         void Start()
         {
-            if (!isLocalPlayer) return;
-
             _camera = Camera.main;
             _startPosition = Vector2.zero;
             _endPosition = Vector2.zero;
+            _selectionManager = GetComponent<ISelectionManager>();
 
             DrawVisual();
         }
 
-        [ClientCallback]
         void Update()
         {
-            if (!isLocalPlayer) return;
+            // TEMPORARY: Because network player join's to late switching from menu scene and we don't want to use this as a NetworkBehaviour
+            if(_myNetworkPlayer == null)
+            {
+                // Since we are not NetworkBehaviour and can't use [ClientCallback]:
+                if(!NetworkClient.connection.isReady)
+                {
+                    Debug.Log("Conn not ready!");
+                    return;
+                }
 
-            if(_myNetworkPlayer == null) {
-                _myNetworkPlayer = NetworkClient
-                    .connection
-                    .identity
-                    .GetComponent<MyNetworkPlayer>()
-                ;
+                _myNetworkPlayer = NetworkClient.connection.identity.GetComponent<MyNetworkPlayer>();
             }
 
-            if(Mouse.current.leftButton.wasPressedThisFrame) {
+
+            if (Mouse.current.leftButton.wasPressedThisFrame) {
                 _startPosition = Input.mousePosition;
                 _selectionBox = new Rect();
             }
@@ -69,7 +62,6 @@ namespace Game.Components.Selections
             }
         }
 
-        [Client]
         void DrawVisual()
         {
             Vector2 boxStart = _startPosition;
@@ -86,8 +78,6 @@ namespace Game.Components.Selections
             _boxVisual.sizeDelta = boxSize;
         }
 
-
-        [Client]
         void DrawSelection()
         {
             if(Input.mousePosition.x < _startPosition.x) {
@@ -107,14 +97,13 @@ namespace Game.Components.Selections
             }
         }
 
-        [Client]
         void SelectGameObjects()
         {
-            foreach(var formationUnit in _myNetworkPlayer.GetMyFormationUnits())
+            foreach (var formationUnit in _myNetworkPlayer.GetMyFormationUnits())
             {
                 AbstractSelectable selectable = formationUnit.GetComponent<AbstractSelectable>();
-                
-                if(!_selectionBox.Contains(
+
+                if (!_selectionBox.Contains(
                     _camera.WorldToScreenPoint(selectable.transform.position)
                 )) continue;
 

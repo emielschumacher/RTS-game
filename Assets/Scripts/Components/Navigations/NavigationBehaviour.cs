@@ -16,40 +16,22 @@ namespace Game.Components.Navigations
         public bool isMoving = false;
         public bool hasPathPending = false;
         NavMeshAgent _navMeshAgent;
-        INavigationRotation _navigationRotation;
+        NavigationRotation _navigationRotation;
         INavigationMovement _navigationMovement;
         INavigationPathPending _navigationPathPending;
         IMovementDetection _movementDetection;
 
-        void Awake()
+        public override void OnStartClient()
         {
             _navigationRotation = new NavigationRotation();
             _navigationPathPending = new NavigationPathPending();
             _movementDetection = new MovementDetection();
-        }
-
-        public override void OnStartClient()
-        {
-            _navMeshAgent = this.transform.GetComponent<NavMeshAgent>();
+            _navMeshAgent = GetComponent<NavMeshAgent>();
 
             _navMeshAgent.Warp(transform.position);
 
             ConfigureNavMeshSettings();
         }
-
-        // [Client]
-        // public override void OnStartClient()
-        // {
-        //     _navMeshAgent = this.transform.GetComponent<NavMeshAgent>();
-
-        //     _navMeshAgent.Warp(transform.position);
-
-        //     ConfigureNavMeshSettings();
-        // }
-
-        // public void Start()
-        // {
-        // }
 
         void Update()
         // void FixedUpdate()
@@ -124,6 +106,8 @@ namespace Game.Components.Navigations
             //     1f,
             //     NavMesh.AllAreas
             // )) return;
+
+            Debug.Log(destination);
 
             _navMeshAgent.SetDestination(destination);
         }

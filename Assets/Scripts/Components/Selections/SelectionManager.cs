@@ -1,17 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using Game.Components.Selections;
 using Game.Components.Selections.Contracts;
 using Game.Components.Selections.Selectables;
-using Game.Components.Selections.Selectables.Contracts;
 
 namespace Game.Components.Selections
 {
-    public class SelectionManager : ISelectionManager
+    public class SelectionManager : MonoBehaviour, ISelectionManager
     {
-        List<AbstractSelectable> _selectedList = new List<AbstractSelectable>();
+        public List<AbstractSelectable> _selectedList = new List<AbstractSelectable>();
 
         public void DragSelect(AbstractSelectable selectable) {
             AddSelectable(selectable);

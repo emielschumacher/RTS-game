@@ -1,37 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
-using Game.Components.Selections;
-using Game.Components.Selections.Contracts;
 using Game.Components.Selections.Selectables;
 using Game.Components.Raycasts.Contracts;
 using Game.Components.Raycasts;
-using Mirror;
 
 namespace Game.Components.Selections {
-    public class SelectionClickBehaviour : NetworkBehaviour
+    public class SelectionClickBehaviour : MonoBehaviour
     {
         LayerMask ground;
-        ISelectionManager _selectionManager;
+        SelectionManager _selectionManager;
         IRaycastMousePosition _raycastMousePosition;
 
-        public void Awake() {
-            _selectionManager = new SelectionManager();
+        public void Start()
+        {
+            _selectionManager = GetComponent<SelectionManager>();
             _raycastMousePosition = new RaycastMousePosition();
         }
         
-        [ClientCallback]
         void Update()
         {
-            if (!isLocalPlayer) return;
-
             if(Mouse.current.leftButton.wasPressedThisFrame) {
                 HandleLeftClick();
             }
         }
 
-        [Command]
         private void HandleLeftClick() 
         {
             RaycastHit hit = _raycastMousePosition.GetRaycastHit();

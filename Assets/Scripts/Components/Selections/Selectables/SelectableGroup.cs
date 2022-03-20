@@ -1,13 +1,6 @@
-using UnityEngine;
-using Game.Components.Selections;
-using Game.Components.Selections.Contracts;
-using Game.Components.Selections.Selectables;
 using Game.Components.Selections.Selectables.Contracts;
-using Game.Components.Navigations;
-using Game.Components.Navigations.Contracts;
-using Game.Components.Formations;
-using Game.Components.Formations.Contracts;
 using System.Collections.Generic;
+using UnityEngine;
 using Mirror;
 
 namespace Game.Components.Selections.Selectables
@@ -17,9 +10,10 @@ namespace Game.Components.Selections.Selectables
         public bool isSelected = false;
         public List<AbstractSelectable> selectableList = new List<AbstractSelectable>();
 
-        [Command]
         public void SelectAll()
         {
+            if (!hasAuthority) { return; }
+
             isSelected = true;
 
             foreach(AbstractSelectable selectable in selectableList) {
@@ -27,9 +21,10 @@ namespace Game.Components.Selections.Selectables
             }
         }
 
-        [Command]
         public void DeselectAll()
         {
+            if (!hasAuthority) { return; }
+
             isSelected = false;
 
             foreach(AbstractSelectable selectable in selectableList) {

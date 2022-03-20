@@ -1,8 +1,6 @@
 using UnityEngine;
 using Game.Components.Formations;
 using System.Collections.Generic;
-using Game.Components.Selections.Selectables;
-using Game.Components.Selections.Contracts;
 using Mirror;
 
 namespace Game.Components.Networking
@@ -28,7 +26,7 @@ namespace Game.Components.Networking
         [Server]
         private void ServerHandleUnitSpawned(FormationUnitBehaviour unit)
         {
-            if(unit.connectionToClient.connectionId != connectionToClient.connectionId) return;
+            if (unit.connectionToClient.connectionId != connectionToClient.connectionId) return;
 
             _myFormationUnits.Add(unit);
         }
@@ -44,15 +42,19 @@ namespace Game.Components.Networking
         [Client]
         public override void OnStartClient()
         {
-            FormationUnitBehaviour.AuthorityOnFormationUnitSpawned += ServerHandleUnitSpawned;
-            FormationUnitBehaviour.AuthorityOnFormationUnitDespawned += ServerHandleUnitDespawned;
+            if (!isClientOnly) return;
+
+            FormationUnitBehaviour.AuthorityOnFormationUnitSpawned += AuthorityHandleUnitSpawned;
+            FormationUnitBehaviour.AuthorityOnFormationUnitDespawned += AuthorityHandleUnitDespawned;
         }
 
         [Client]
         public override void OnStopClient()
         {
-            FormationUnitBehaviour.AuthorityOnFormationUnitSpawned -= ServerHandleUnitSpawned;
-            FormationUnitBehaviour.AuthorityOnFormationUnitDespawned -= ServerHandleUnitDespawned;
+            if (!isClientOnly) return;
+
+            FormationUnitBehaviour.AuthorityOnFormationUnitSpawned -= AuthorityHandleUnitSpawned;
+            FormationUnitBehaviour.AuthorityOnFormationUnitDespawned -= AuthorityHandleUnitDespawned;
         }
 
         [Client]

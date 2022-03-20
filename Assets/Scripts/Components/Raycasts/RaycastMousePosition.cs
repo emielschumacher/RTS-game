@@ -1,23 +1,15 @@
 using UnityEngine;
-using UnityEngine.Events;
-using Game.Components.Raycasts;
 using Game.Components.Raycasts.Contracts;
-using Game.Components.Scenes.Contracts;
-using Game.Components.Scenes;
 
 namespace Game.Components.Raycasts
 {
     public class RaycastMousePosition : IRaycastMousePosition
     {
-        ISceneManager _sceneManager;
-
-        public void Awake() {
-            _sceneManager = new SceneManager();
-        }
+        Camera _camera;
 
         public RaycastHit GetRaycastHit()
         {
-            Camera camera = _sceneManager.GetCamera();
+            Camera camera = GetCamera();
             RaycastHit hit;
 
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -25,6 +17,16 @@ namespace Game.Components.Raycasts
             Physics.Raycast(ray, out hit, Mathf.Infinity);
             
             return hit;
+        }
+
+        public Camera GetCamera()
+        {
+            if (!_camera)
+            {
+                _camera = Camera.main;
+            }
+
+            return _camera;
         }
     }
 }

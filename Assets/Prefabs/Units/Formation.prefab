@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4093248041612398354}
   - component: {fileID: 286889002}
   - component: {fileID: -7450218095177376668}
-  - component: {fileID: 7934567331820094870}
+  - component: {fileID: 1425283248498807709}
   m_Layer: 7
   m_Name: Formation
   m_TagString: Untagged
@@ -52,7 +52,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4093248041612398358}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -120,8 +120,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   isSelected: 0
-  selectableList:
-  - {fileID: 0}
+  selectableList: []
 --- !u!114 &-7450218095177376668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,7 +138,7 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 167b887dfb96943ddaf371a5dac4eb7c
   hasSpawned: 0
---- !u!114 &7934567331820094870
+--- !u!114 &1425283248498807709
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
