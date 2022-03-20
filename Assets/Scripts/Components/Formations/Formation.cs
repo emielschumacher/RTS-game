@@ -37,7 +37,9 @@ namespace Game.Components.Formations
                     );
                 }
 
-                positionList.Add(formationPosition);
+                positionList.Add(
+                    formationPosition
+                );
             }
 
             return positionList;
