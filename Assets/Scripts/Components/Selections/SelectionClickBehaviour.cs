@@ -8,12 +8,10 @@ namespace Game.Components.Selections {
     public class SelectionClickBehaviour : MonoBehaviour
     {
         LayerMask ground;
-        SelectionManager _selectionManager;
         IRaycastMousePosition _raycastMousePosition;
 
         public void Start()
         {
-            _selectionManager = GetComponent<SelectionManager>();
             _raycastMousePosition = new RaycastMousePosition();
         }
         
@@ -33,16 +31,16 @@ namespace Game.Components.Selections {
                     out AbstractSelectable selectable
                 )
             ) {
-                _selectionManager.DeselectAll();
+                SelectionManager.instance.DeselectAll();
                 return;
             }
 
             if(Input.GetKey(KeyCode.LeftShift)) {
-                _selectionManager.ShiftClickSelect(selectable);
+                SelectionManager.instance.ShiftClickSelect(selectable);
                 return;
             }
-            
-            _selectionManager.ClickSelect(selectable);
+
+            SelectionManager.instance.ClickSelect(selectable);
         }
     }
 }

@@ -1,29 +1,21 @@
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using Game.Components.Selections.Selectables.Contracts;
-using Game.Components.Selections.Contracts;
-using Game.Components.Navigations;
+﻿using UnityEngine;
 
 namespace Game.Components.Navigations
 {
     public class NavigationManager : MonoBehaviour
     {
-        // public void SetDestination(Vector3 destination)
-        // {
-        //     List<ISelectable> selectedList = _selectionManager.GetSelectedList();
+        public static NavigationManager instance { get; private set; }
+        public NavigationMarkerBehaviour navigationMarkerBehaviour;
 
-        //     foreach(ISelectable selectable in selectedList) {
-        //         if(!(selectable is ISelectableFormationUnit)) continue;
+        private void Start()
+        {
+            if (instance != null && instance != this) {
+                Destroy(this);
+            } else {
+                instance = this;
+            }
 
-        //         ISelectableFormationUnit selectableFormationUnit = selectable as ISelectableFormationUnit;
-                
-        //         selectableFormationUnit
-        //             .formationUnitBehaviour
-        //             .formationHolderBehaviour
-        //             .SetDestination(destination)
-        //         ;
-        //     }
-        // }
+            navigationMarkerBehaviour = GetComponent<NavigationMarkerBehaviour>();
+        }
     }
 }

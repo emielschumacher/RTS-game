@@ -14,7 +14,6 @@ namespace Game.Components.Selections
         Rect _selectionBox;
         Vector2 _startPosition;
         Vector2 _endPosition;
-        ISelectionManager _selectionManager;
         MyNetworkPlayer _myNetworkPlayer;
 
         void Start()
@@ -22,7 +21,6 @@ namespace Game.Components.Selections
             _camera = Camera.main;
             _startPosition = Vector2.zero;
             _endPosition = Vector2.zero;
-            _selectionManager = GetComponent<ISelectionManager>();
 
             DrawVisual();
         }
@@ -107,7 +105,7 @@ namespace Game.Components.Selections
                     _camera.WorldToScreenPoint(selectable.transform.position)
                 )) continue;
 
-                _selectionManager.DragSelect(selectable);
+                SelectionManager.instance.DragSelect(selectable);
             }
         }
     }

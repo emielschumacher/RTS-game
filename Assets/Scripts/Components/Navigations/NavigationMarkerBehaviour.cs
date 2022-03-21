@@ -1,7 +1,7 @@
 using UnityEngine;
 using Game.Components.Raycasts.Contracts;
 using Game.Components.Raycasts;
-using Game.Components.Events;
+using UnityEngine.Events;
 
 namespace Game.Components.Navigations
 {
@@ -9,7 +9,7 @@ namespace Game.Components.Navigations
     {
         public GameObject groundMarker;
         IRaycastMousePosition _raycastMousePosition;
-        [SerializeField] Vector3Event onNewMarkerPositionEvent;
+        public UnityAction<Vector3> onNewMarkerPositionEvent;
 
         public void Awake() {
             _raycastMousePosition = new RaycastMousePosition();
@@ -31,7 +31,7 @@ namespace Game.Components.Navigations
 
             groundMarker.transform.position = hit.point;
             groundMarker.SetActive(true);
-            onNewMarkerPositionEvent?.Raise(hit.point);
+            onNewMarkerPositionEvent?.Invoke(hit.point);
         }
     }
 }

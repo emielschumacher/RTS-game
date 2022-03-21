@@ -131,6 +131,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 428756830339806129, guid: 5f40895060534413ead20da176469c5f, type: 3}
+      propertyPath: onlineScene
+      value: Assets/Scenes/Gameplay.unity
+      objectReference: {fileID: 0}
+    - target: {fileID: 428756830339806129, guid: 5f40895060534413ead20da176469c5f, type: 3}
+      propertyPath: offlineScene
+      value: Assets/Scenes/Menu.unity
+      objectReference: {fileID: 0}
+    - target: {fileID: 428756830339806129, guid: 5f40895060534413ead20da176469c5f, type: 3}
       propertyPath: _SpawnerPrefab
       value: 
       objectReference: {fileID: 4117525315116409570, guid: 421ed07d568cf40f7826369a0c07e182, type: 3}

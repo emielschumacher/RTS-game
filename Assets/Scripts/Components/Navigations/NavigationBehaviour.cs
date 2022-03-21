@@ -4,6 +4,7 @@ using Game.Components.Navigations.Contracts;
 using Game.Components.Movements.Contracts;
 using Game.Components.Movements;
 using Mirror;
+using UnityEngine.Events;
 
 namespace Game.Components.Navigations
 {
@@ -30,7 +31,18 @@ namespace Game.Components.Navigations
 
             _navMeshAgent.Warp(transform.position);
 
+            NavigationManager
+                .instance.navigationMarkerBehaviour
+                .onNewMarkerPositionEvent += HandleNewMarkerPositionEvent;
+
             ConfigureNavMeshSettings();
+        }
+
+        private void HandleNewMarkerPositionEvent(
+            Vector3 position
+        )
+        {
+            SetDestination(position);
         }
 
         void Update()
@@ -106,9 +118,6 @@ namespace Game.Components.Navigations
             //     1f,
             //     NavMesh.AllAreas
             // )) return;
-
-            Debug.Log(destination);
-
             _navMeshAgent.SetDestination(destination);
         }
     }

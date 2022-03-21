@@ -7,7 +7,20 @@ namespace Game.Components.Selections
 {
     public class SelectionManager : MonoBehaviour, ISelectionManager
     {
+        public static SelectionManager instance { get; private set; }
         public List<AbstractSelectable> _selectedList = new List<AbstractSelectable>();
+
+        private void Start()
+        {
+            if (instance != null && instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                instance = this;
+            }
+        }
 
         public void DragSelect(AbstractSelectable selectable) {
             AddSelectable(selectable);
