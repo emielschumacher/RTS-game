@@ -131,22 +131,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 428756830339806129, guid: 5f40895060534413ead20da176469c5f, type: 3}
-      propertyPath: onlineScene
-      value: Assets/Scenes/Gameplay.unity
-      objectReference: {fileID: 0}
-    - target: {fileID: 428756830339806129, guid: 5f40895060534413ead20da176469c5f, type: 3}
-      propertyPath: offlineScene
-      value: Assets/Scenes/Menu.unity
-      objectReference: {fileID: 0}
-    - target: {fileID: 428756830339806129, guid: 5f40895060534413ead20da176469c5f, type: 3}
-      propertyPath: _SpawnerPrefab
-      value: 
-      objectReference: {fileID: 4117525315116409570, guid: 421ed07d568cf40f7826369a0c07e182, type: 3}
-    - target: {fileID: 428756830339806129, guid: 5f40895060534413ead20da176469c5f, type: 3}
-      propertyPath: _myNetworkPlayerPrefab
-      value: 
-      objectReference: {fileID: 2515782701502232622, guid: 2dc4c6b7f678d48e7872d7c7da959d79, type: 3}
-    - target: {fileID: 428756830339806129, guid: 5f40895060534413ead20da176469c5f, type: 3}
       propertyPath: spawnPrefabs.Array.size
       value: 5
       objectReference: {fileID: 0}
@@ -239,8 +223,8 @@ Camera:
   m_GameObject: {fileID: 1380916659}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.13541298, g: 0.14512135, b: 0.16037738, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

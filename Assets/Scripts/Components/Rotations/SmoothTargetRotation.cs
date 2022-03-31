@@ -17,7 +17,7 @@ namespace Game.Components.Rotations
             _rotation = Quaternion.identity;
             _lookRotation = targetPosition - currentPosition;
             
-            if((_lookRotation) == Vector3.zero) {
+            if(_lookRotation == Vector3.zero) {
                 return _rotation;
             }
 

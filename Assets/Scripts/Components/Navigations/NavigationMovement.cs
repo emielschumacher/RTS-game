@@ -13,14 +13,16 @@ namespace Game.Components.Navigations
 
         public Vector3 Movement(
             Transform transform,
-            NavMeshAgent navMeshAgent,
+            Vector3 nextPosition,
             float deltaTime
         ) {
-            _smoothTargetMovement = new SmoothTargetMovement();
+            if (_smoothTargetMovement == null) {
+                _smoothTargetMovement = new SmoothTargetMovement();
+            }
             
             return _smoothTargetMovement.Movement(
                 transform.position,
-                navMeshAgent.nextPosition,
+                nextPosition,
                 deltaTime
             );
         }

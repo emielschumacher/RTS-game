@@ -7,16 +7,16 @@ namespace Game.Components.Selections.Selectables
 {
     public abstract class AbstractSelectable : NetworkBehaviour, ISelectable
     {
-        public SelectableGroup _selectableGroup;
         public UnityEvent onSelectEvent;
         public UnityEvent onDeselectEvent;
-        bool isSelected = false;
+        SelectableGroup _selectableGroup;
+        bool _isSelected = false;
 
         public void HandleOnSelect()
         {
             if (!hasAuthority) { return; }
 
-            isSelected = true;
+            _isSelected = true;
             onSelectEvent?.Invoke();
         }
 
@@ -24,7 +24,7 @@ namespace Game.Components.Selections.Selectables
         {
             if (!hasAuthority) { return; }
 
-            isSelected = false;
+            _isSelected = false;
             onDeselectEvent?.Invoke();
         }
 

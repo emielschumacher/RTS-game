@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace Game.Components.Navigations.Contracts
 {  
@@ -7,7 +6,7 @@ namespace Game.Components.Navigations.Contracts
     {
         Quaternion Rotation(
             Transform transform,
-            NavMeshAgent navMeshAgent,
+            Vector3 nextPosition,
             float deltaTime,
             float rotationSpeed = 5f,
             bool fullTurn = true

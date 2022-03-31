@@ -5,12 +5,13 @@ namespace Game.Components.Formations
 {
     public class FormationHolderPointBehaviour : NetworkBehaviour
     {
-        public Vector3 formationOffset = Vector3.zero;
-        public FormationHolderBehaviour formationHolder;
-
+        [HideInInspector] public Vector3 formationOffset = Vector3.zero;
+        [HideInInspector] public FormationHolderBehaviour formationHolder;
 
         private void Update()
         {
+            if (!formationHolder) return;
+
             transform.position = formationHolder.transform.position + formationOffset;
         }
     }

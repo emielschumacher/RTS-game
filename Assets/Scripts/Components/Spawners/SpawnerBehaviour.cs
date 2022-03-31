@@ -9,6 +9,24 @@ namespace Game.Components.Spawners
         [SerializeField] private Transform spawnPoint = null;
         [SerializeField] private GameObject _formationPrefab;
 
+        public void Awake() {
+            GameObject cameraRigBase = Camera.main.transform.parent.gameObject;
+
+            cameraRigBase.transform.position = transform.position;
+
+            cameraRigBase.transform.position = new Vector3(
+                transform.position.x,
+                cameraRigBase.transform.position.y,
+                transform.position.z
+            );
+        }
+
+        [Client]
+        public override void OnStartClient() {
+            GameObject cameraRigBase = Camera.main.transform.parent.gameObject;
+            cameraRigBase.GetComponent<CameraBehaviour>().enabled = true;
+        }
+
         [Client]
         public void OnPointerClick(PointerEventData eventData)
         {

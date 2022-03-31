@@ -7,7 +7,7 @@ namespace Game.Components.Navigations.Contracts
     {
         Vector3 Movement(
             Transform transform,
-            NavMeshAgent navMeshAgent,
+            Vector3 nextPosition,
             float deltaTime
         );
     }

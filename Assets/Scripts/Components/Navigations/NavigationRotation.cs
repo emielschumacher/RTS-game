@@ -10,26 +10,27 @@ namespace Game.Components.Navigations
     public class NavigationRotation : Contracts.INavigationRotation
     {
         ISmoothTargetRotation _smoothTargetRotation;
+        Vector3 _direction;
 
         public Quaternion Rotation(
             Transform transform,
-            NavMeshAgent navMeshAgent,
+            Vector3 nextPosition,
             float deltaTime,
             float rotationSpeed = 5f,
             bool fullTurn = true
         ) {
-            _smoothTargetRotation = new SmoothTargetRotation();
+            if (_smoothTargetRotation == null) {
+                _smoothTargetRotation = new SmoothTargetRotation();
+            }
 
             if(fullTurn == false) {
-                Vector3 direction = (navMeshAgent.nextPosition - transform.position).normalized;
+                _direction = (nextPosition - transform.position).normalized;
 
-                if(direction == Vector3.zero) return transform.rotation;
+                if(_direction == Vector3.zero) return transform.rotation;
 
-                Quaternion rotation = Quaternion.LookRotation(direction);
-
-                if(Vector3.Angle(direction, transform.forward) >= 90) {
+                if(Vector3.Angle(_direction, transform.forward) >= 90) {
                     return _smoothTargetRotation.Rotation(
-                        navMeshAgent.nextPosition,
+                        nextPosition,
                         transform.rotation,
                         transform.position,
                         deltaTime,
@@ -41,7 +42,7 @@ namespace Game.Components.Navigations
             return _smoothTargetRotation.Rotation(
                 transform.position,
                 transform.rotation,
-                navMeshAgent.nextPosition,
+                nextPosition,
                 deltaTime,
                 rotationSpeed
             );

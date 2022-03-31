@@ -5,7 +5,7 @@ namespace Game.Components.Movements
     public class MovementDetection : Contracts.IMovementDetection
     {
         public Vector3 lastPosition;
-        private bool _IsMoving;
+        private bool _isMoving;
 
         public bool IsMoving(
             Vector3 currentPosition
@@ -14,7 +14,7 @@ namespace Game.Components.Movements
 
             lastPosition = currentPosition;
 
-            return _IsMoving;
+            return _isMoving;
         }
     }
 }
