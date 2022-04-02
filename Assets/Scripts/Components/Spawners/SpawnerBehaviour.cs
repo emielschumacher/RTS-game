@@ -19,10 +19,11 @@ namespace Game.Components.Spawners
                 cameraRigBase.transform.position.y,
                 transform.position.z
             );
+
+            Invoke("EnableCamera", 0.2f);
         }
 
-        [Client]
-        public override void OnStartClient() {
+        void EnableCamera() {
             GameObject cameraRigBase = Camera.main.transform.parent.gameObject;
             cameraRigBase.GetComponent<CameraBehaviour>().enabled = true;
         }

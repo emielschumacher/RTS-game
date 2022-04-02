@@ -33,9 +33,10 @@
         [Range(0f,0.1f)]
         private float edgeTolerance = 0.05f;
 
-        //value set in various functions 
+        //value set in various functions
         //used to update the position of the camera base object.
         private Vector3 targetPosition;
+        private Vector3 desiredPosition;
 
         private float zoomHeight;
 
@@ -55,6 +56,7 @@
             cameraTransform.LookAt(this.transform);
 
             lastPosition = this.transform.position;
+            desiredPosition = lastPosition;
 
             movement = cameraActions.Camera.MoveCamera;
             cameraActions.Camera.RotateCamera.performed += RotateCamera;
@@ -100,6 +102,9 @@
                 targetPosition += inputValue;
         }
 
+        public float dragSpeed = 5;
+        private Vector3 dragOrigin;
+
         private void DragCamera()
         {
             if (!Mouse.current.rightButton.isPressed)
@@ -111,10 +116,11 @@
         
             if(plane.Raycast(ray, out float distance))
             {
-                if (Mouse.current.rightButton.wasPressedThisFrame)
+                if (Mouse.current.rightButton.wasPressedThisFrame) {
                     startDrag = ray.GetPoint(distance);
-                else
+                } else {
                     targetPosition += startDrag - ray.GetPoint(distance);
+                }
             }
         }
 
@@ -141,18 +147,23 @@
 
         private void UpdateBasePosition()
         {
+            float newMaxSpeed = maxSpeed;
+            if (Mouse.current.rightButton.isPressed) { newMaxSpeed = 5f; } 
+
             if (targetPosition.sqrMagnitude > 0.1f)
             {
                 //create a ramp up or acceleration
-                speed = Mathf.Lerp(speed, maxSpeed, Time.deltaTime * acceleration);
-                transform.position += targetPosition * speed * Time.deltaTime;
+                speed = Mathf.Lerp(speed, newMaxSpeed, Time.deltaTime * acceleration);
+                desiredPosition += targetPosition * speed * Time.deltaTime;
             }
             else
             {
                 //create smooth slow down
                 horizontalVelocity = Vector3.Lerp(horizontalVelocity, Vector3.zero, Time.deltaTime * damping);
-                transform.position += horizontalVelocity * Time.deltaTime;
+                desiredPosition += horizontalVelocity * Time.deltaTime;
             }
+
+            transform.position = Vector3.Lerp(transform.position, desiredPosition, 0.4f);
 
             //reset for next frame
             targetPosition = Vector3.zero;
@@ -180,10 +191,13 @@
             //add vector for forward/backward zoom
             zoomTarget -= zoomSpeed * (zoomHeight - cameraTransform.localPosition.y) * Vector3.forward;
 
-            cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, zoomTarget, Time.deltaTime * zoomDampening);
+            Vector3 smoothedPosition = Vector3.Lerp(cameraTransform.localPosition, zoomTarget, 0.125f);
+            cameraTransform.localPosition = smoothedPosition;
+
+            //cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, zoomTarget, Time.deltaTime * zoomDampening);
             cameraTransform.LookAt(this.transform);
         }
-     
+
         private void RotateCamera(InputAction.CallbackContext obj)
         {
             if (!Mouse.current.middleButton.isPressed)

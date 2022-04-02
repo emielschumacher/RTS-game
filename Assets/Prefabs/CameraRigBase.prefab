@@ -44,8 +44,8 @@ Camera:
   m_GameObject: {fileID: 2651888742000373284}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.13725491, g: 0.14901961, b: 0.16078432, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EventMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147483647
   m_MaxRayIntersections: 0
 --- !u!114 &2651888742000373283
 MonoBehaviour:
@@ -181,16 +181,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2254f36574e9d43268c38fe22d69aa04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 5
+  maxSpeed: 30
   acceleration: 10
   damping: 15
-  stepSize: 2
+  stepSize: 4
   zoomDampening: 7.5
   minHeight: 30
   maxHeight: 60
   zoomSpeed: 2
   maxRotationSpeed: 1
   edgeTolerance: 0.05
+  dragSpeed: 2
 --- !u!1 &2651888742164928246
 GameObject:
   m_ObjectHideFlags: 0
