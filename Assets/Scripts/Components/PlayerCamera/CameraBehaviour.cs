@@ -126,23 +126,23 @@
 
         private void CheckMouseAtScreenEdge()
         {
-            //mouse position is in pixels
-            Vector2 mousePosition = Mouse.current.position.ReadValue();
-            Vector3 moveDirection = Vector3.zero;
+            ////mouse position is in pixels
+            //Vector2 mousePosition = Mouse.current.position.ReadValue();
+            //Vector3 moveDirection = Vector3.zero;
 
-            //horizontal scrolling
-            if (mousePosition.x < edgeTolerance * Screen.width)
-                moveDirection += -GetCameraRight();
-            else if (mousePosition.x > (1f - edgeTolerance) * Screen.width)
-                moveDirection += GetCameraRight();
+            ////horizontal scrolling
+            //if (mousePosition.x < edgeTolerance * Screen.width)
+            //    moveDirection += -GetCameraRight();
+            //else if (mousePosition.x > (1f - edgeTolerance) * Screen.width)
+            //    moveDirection += GetCameraRight();
 
-            //vertical scrolling
-            if (mousePosition.y < edgeTolerance * Screen.height)
-                moveDirection += -GetCameraForward();
-            else if (mousePosition.y > (1f - edgeTolerance) * Screen.height)
-                moveDirection += GetCameraForward();
+            ////vertical scrolling
+            //if (mousePosition.y < edgeTolerance * Screen.height)
+            //    moveDirection += -GetCameraForward();
+            //else if (mousePosition.y > (1f - edgeTolerance) * Screen.height)
+            //    moveDirection += GetCameraForward();
 
-            targetPosition += moveDirection;
+            //targetPosition += moveDirection;
         }
 
         private void UpdateBasePosition()

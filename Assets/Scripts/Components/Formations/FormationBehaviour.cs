@@ -116,7 +116,7 @@ namespace Game.Components.Formations
         [ClientRpc]
         void RpcInitSpawnedFormationHolder(GameObject formationHolder)
         {
-            if(!hasAuthority) { return; }
+            //if(!hasAuthority) { return; }
 
             formationHolder.GetComponent<FormationHolderBehaviour>().formationBehaviour = this;
             _formationHolderBehaviour = formationHolder.GetComponent<FormationHolderBehaviour>();

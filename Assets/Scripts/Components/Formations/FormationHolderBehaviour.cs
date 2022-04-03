@@ -7,28 +7,28 @@ namespace Game.Components.Formations
     [RequireComponent(typeof(NavigationBehaviour))]
     public class FormationHolderBehaviour : NetworkBehaviour
     {
-        [HideInInspector] public FormationBehaviour formationBehaviour;
+        public FormationBehaviour formationBehaviour;
         private NavigationBehaviour _navigationBehaviour;
 
-        [Client]
-        public override void OnStartClient()
+        public void Start()
         {
             _navigationBehaviour = GetComponent<NavigationBehaviour>();
 
-            NavigationManager
-                .instance.navigationMarkerBehaviour
-                .onNewMarkerPositionEvent += HandleNewMarkerPositionEvent;
+            if (hasAuthority) {
+                NavigationManager
+                    .instance.navigationMarkerBehaviour
+                    .onNewMarkerPositionEvent += HandleNewMarkerPositionEvent;
+            }
         }
 
         private void HandleNewMarkerPositionEvent(
-            Vector3 position
+            Vector3 destination
         ) {
-            SetDestination(position);
-        }
+            if (!hasAuthority) {
+                Debug.Log("no auth!");
+                return;
+                }
 
-        [Client]
-        public void SetDestination(Vector3 destination)
-        {
             if(formationBehaviour.selectableGroup.isSelected == true) {
                 _navigationBehaviour.SetDestination(destination);
             }
