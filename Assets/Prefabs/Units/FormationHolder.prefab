@@ -144,6 +144,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   formationBehaviour: {fileID: 0}
+  _navigationBehaviour: {fileID: 0}
 --- !u!65 &2045134170546545022
 BoxCollider:
   m_ObjectHideFlags: 0

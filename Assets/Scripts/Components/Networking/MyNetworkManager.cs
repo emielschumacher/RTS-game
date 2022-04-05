@@ -16,8 +16,8 @@ namespace Game.Components.Networking
         {
             _conn = conn;
 
-            base.OnServerAddPlayer(conn);
-            //SpawnNetworkPlayer();
+            //base.OnServerAddPlayer(conn);
+            SpawnNetworkPlayer();
 
             // Spawner
             GameObject spawnerInstance = Instantiate(
@@ -29,19 +29,19 @@ namespace Game.Components.Networking
             NetworkServer.Spawn(spawnerInstance.transform.gameObject, _conn);
         }
 
-        //private void SpawnNetworkPlayer()
-        //{
-        //    Transform startPos = GetStartPosition();
-        //    GameObject playerInstance = Instantiate(
-        //        _myNetworkPlayerPrefab,
-        //        startPos.position,
-        //        startPos.rotation
-        //    );
-        //    myNetworkPlayer = playerInstance.GetComponent<MyNetworkPlayer>();
+        private void SpawnNetworkPlayer()
+        {
+            Transform startPos = GetStartPosition();
+            GameObject playerInstance = Instantiate(
+                _myNetworkPlayerPrefab,
+                startPos.position,
+                startPos.rotation
+            );
+            myNetworkPlayer = playerInstance.GetComponent<MyNetworkPlayer>();
 
-        //    NetworkServer.Spawn(playerInstance.transform.gameObject, _conn);
-        //    playerInstance.name = $"NetworkPlayer [connId={_conn.connectionId}]";
-        //    NetworkServer.AddPlayerForConnection(_conn, playerInstance.transform.gameObject);
-        //}
+            NetworkServer.Spawn(playerInstance.transform.gameObject, _conn);
+            playerInstance.name = $"NetworkPlayer [connId={_conn.connectionId}]";
+            NetworkServer.AddPlayerForConnection(_conn, playerInstance.transform.gameObject);
+        }
     }
 }

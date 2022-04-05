@@ -4,7 +4,7 @@ using Game.Components.Formations.Contracts;
 
 namespace Game.Components.Formations
 {
-    public class Formation : MonoBehaviour, IFormation
+    public class Formation : IFormation
     {
         public List<Vector3> GridFormation(
             int unitAmount,

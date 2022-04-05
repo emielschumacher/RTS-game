@@ -8,26 +8,30 @@ namespace Game.Components.Formations
     public class FormationHolderBehaviour : NetworkBehaviour
     {
         public FormationBehaviour formationBehaviour;
-        private NavigationBehaviour _navigationBehaviour;
+        [SerializeField]private NavigationBehaviour _navigationBehaviour;
 
         public void Start()
         {
             _navigationBehaviour = GetComponent<NavigationBehaviour>();
+        }
 
-            if (hasAuthority) {
-                NavigationManager
-                    .instance.navigationMarkerBehaviour
-                    .onNewMarkerPositionEvent += HandleNewMarkerPositionEvent;
+        public override void OnStartClient()
+        {
+            if (!hasAuthority) {
+                return;
             }
+
+            NavigationManager
+                .instance.navigationMarkerBehaviour
+                .onNewMarkerPositionEvent += HandleNewMarkerPositionEvent;
         }
 
         private void HandleNewMarkerPositionEvent(
             Vector3 destination
         ) {
             if (!hasAuthority) {
-                Debug.Log("no auth!");
                 return;
-                }
+            }
 
             if(formationBehaviour.selectableGroup.isSelected == true) {
                 _navigationBehaviour.SetDestination(destination);

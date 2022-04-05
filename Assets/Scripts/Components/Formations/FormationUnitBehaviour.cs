@@ -10,7 +10,7 @@ namespace Game.Components.Formations
     [RequireComponent(typeof(AbstractSelectable))]
     public class FormationUnitBehaviour : NetworkBehaviour
     {
-        [HideInInspector] public Transform formationHolderPoint;
+        public Transform formationHolderPoint;
         public static event Action<FormationUnitBehaviour> ServerOnFormationUnitSpawned;
         public static event Action<FormationUnitBehaviour> ServerOnFormationUnitDespawned;
         public static event Action<FormationUnitBehaviour> AuthorityOnFormationUnitSpawned;

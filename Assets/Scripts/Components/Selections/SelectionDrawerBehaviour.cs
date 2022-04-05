@@ -27,18 +27,18 @@ namespace Game.Components.Selections
 
         void Update()
         {
-            // TEMPORARY: Because network player join's to late switching from menu scene and we don't want to use this as a NetworkBehaviour
-            if (_myNetworkPlayer == null)
-            {
-                // Since we are not NetworkBehaviour and can't use [ClientCallback]:
-                if (!NetworkClient.connection.isReady)
-                {
-                    Debug.Log("Conn not ready!");
-                    return;
-                }
+            //// TEMPORARY: Because network player join's to late switching from menu scene and we don't want to use this as a NetworkBehaviour
+            //if (_myNetworkPlayer == null)
+            //{
+            //    // Since we are not NetworkBehaviour and can't use [ClientCallback]:
+            //    if (!NetworkClient.connection.isReady)
+            //    {
+            //        Debug.Log("Conn not ready!");
+            //        return;
+            //    }
 
-                _myNetworkPlayer = NetworkClient.connection.identity.GetComponent<MyNetworkPlayer>();
-            }
+            //    _myNetworkPlayer = NetworkClient.connection.identity.GetComponent<MyNetworkPlayer>();
+            //}
 
 
             if (Mouse.current.leftButton.wasPressedThisFrame) {
@@ -97,16 +97,16 @@ namespace Game.Components.Selections
 
         void SelectGameObjects()
         {
-            foreach (var formationUnit in _myNetworkPlayer.GetMyFormationUnits())
-            {
-                AbstractSelectable selectable = formationUnit.GetComponent<AbstractSelectable>();
+            //foreach (var formationUnit in _myNetworkPlayer.GetMyFormationUnits())
+            //{
+            //    AbstractSelectable selectable = formationUnit.GetComponent<AbstractSelectable>();
 
-                if (!_selectionBox.Contains(
-                    _camera.WorldToScreenPoint(selectable.transform.position)
-                )) continue;
+            //    if (!_selectionBox.Contains(
+            //        _camera.WorldToScreenPoint(selectable.transform.position)
+            //    )) continue;
 
-                SelectionManager.instance.DragSelect(selectable);
-            }
+            //    SelectionManager.instance.DragSelect(selectable);
+            //}
         }
     }
 }

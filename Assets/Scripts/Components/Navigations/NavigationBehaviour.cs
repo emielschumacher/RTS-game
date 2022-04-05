@@ -21,7 +21,7 @@ namespace Game.Components.Navigations
         INavigationPathPending _navigationPathPending;
         IMovementDetection _movementDetection;
 
-        public override void OnStartClient()
+        public void Awake()
         {
             _navigationRotation = new NavigationRotation();
             _navigationMovement = new NavigationMovement();
@@ -34,7 +34,6 @@ namespace Game.Components.Navigations
             ConfigureNavMeshSettings();
         }
 
-        [Client]
         void ConfigureNavMeshSettings()
         {
             _navMeshAgent.updatePosition = false;
@@ -43,25 +42,23 @@ namespace Game.Components.Navigations
 
         [ClientCallback]
         void Update()
-        // void FixedUpdate()
         {
             if (isClient && hasAuthority) {
-                HandleMovement();
-                HandleRotation();
+                CmdMovement();
+                CmdRotation();
             }
         }
 
-        [ClientCallback]
-        void HandleMovement()
-        {
-            CmdMovement(_navMeshAgent.nextPosition);
-        }
-
         [Command]
-        void CmdMovement(Vector3 nextPosition)
+        void CmdMovement()
         {
             CheckMovement();
-            RpcMovement(nextPosition);
+
+            transform.position = _navigationMovement.Movement(
+                transform,
+                _navMeshAgent.nextPosition,
+                Time.deltaTime
+            );
         }
 
         void CheckMovement()
@@ -75,46 +72,37 @@ namespace Game.Components.Navigations
             hasPathPending = _navigationPathPending.IsPathPending(_navMeshAgent);
         }
 
-        [ClientRpc]
-        void RpcMovement(Vector3 nextPosition)
-        {
-            transform.position = _navigationMovement.Movement(
-                transform,
-                nextPosition,
-                Time.fixedDeltaTime
-            );
-        }
-
-        [ClientCallback]
-        void HandleRotation()
-        {
-             if(!isMoving) return;
-
-            CmdRotation(_navMeshAgent.nextPosition);
-        }
-
         [Command]
-        void CmdRotation(Vector3 nextPosition)
+        void CmdRotation()
         {
+            if(!isMoving) return;
+
             Quaternion rotation = _navigationRotation.Rotation(
                 transform,
-                nextPosition,
+                _navMeshAgent.nextPosition,
                 Time.deltaTime,
                 5f,
                 fullTurning
             );
-
-            RpcRotation(rotation);
-        }
-
-        [ClientRpc]
-        void RpcRotation(Quaternion rotation)
-        {
+            
             transform.rotation = rotation;
         }
 
         [Client]
-        public void SetDestination(Vector3 destination)
+        public void SetDestination(
+            Vector3 destination
+        ) {
+            if (!isClient && !hasAuthority) {
+                Debug.Log("No isClient && no hasAuthority");
+
+                return;
+            }
+
+            CmdSetDestination(destination);
+        }
+
+        [Command]
+        public void CmdSetDestination(Vector3 destination)
         {
             // if(!NavMesh.SamplePosition(
             //     destination,
