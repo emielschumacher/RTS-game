@@ -1,10 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
 using Game.Components.Navigations.Contracts;
-using Game.Components.Movements.Contracts;
 using Game.Components.Movements;
 using Mirror;
-using UnityEngine.Events;
 
 namespace Game.Components.Navigations
 {
@@ -12,21 +10,19 @@ namespace Game.Components.Navigations
     public class NavigationBehaviour : NetworkBehaviour
     {
         public bool fullTurning = true;
-        public Vector3 lastPosition;
+        [SyncVar] public Vector3 lastPosition;
         [SyncVar] public bool isMoving = false;
         [SyncVar] public bool hasPathPending = false;
         NavMeshAgent _navMeshAgent;
         NavigationRotation _navigationRotation;
         INavigationMovement _navigationMovement;
         INavigationPathPending _navigationPathPending;
-        IMovementDetection _movementDetection;
 
         public void Awake()
         {
             _navigationRotation = new NavigationRotation();
             _navigationMovement = new NavigationMovement();
             _navigationPathPending = new NavigationPathPending();
-            _movementDetection = new MovementDetection();
             _navMeshAgent = GetComponent<NavMeshAgent>();
 
             _navMeshAgent.Warp(transform.position);
@@ -47,6 +43,20 @@ namespace Game.Components.Navigations
                 CmdMovement();
                 CmdRotation();
             }
+        }
+
+        [Command]
+        void CmdRotation()
+        {
+            if(!isMoving) return;
+
+            transform.rotation = _navigationRotation.Rotation(
+                transform,
+                _navMeshAgent.nextPosition,
+                Time.deltaTime,
+                5f,
+                fullTurning
+            );
         }
 
         [Command]
@@ -72,29 +82,11 @@ namespace Game.Components.Navigations
             hasPathPending = _navigationPathPending.IsPathPending(_navMeshAgent);
         }
 
-        [Command]
-        void CmdRotation()
-        {
-            if(!isMoving) return;
-
-            Quaternion rotation = _navigationRotation.Rotation(
-                transform,
-                _navMeshAgent.nextPosition,
-                Time.deltaTime,
-                5f,
-                fullTurning
-            );
-            
-            transform.rotation = rotation;
-        }
-
         [Client]
         public void SetDestination(
             Vector3 destination
         ) {
             if (!isClient && !hasAuthority) {
-                Debug.Log("No isClient && no hasAuthority");
-
                 return;
             }
 

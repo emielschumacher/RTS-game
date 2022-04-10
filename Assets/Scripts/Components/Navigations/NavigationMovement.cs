@@ -1,7 +1,4 @@
 using UnityEngine;
-using UnityEngine.AI;
-using Game.Components.Navigations;
-using Game.Components.Navigations.Contracts;
 using Game.Components.Movements;
 using Game.Components.Movements.Contracts;
 

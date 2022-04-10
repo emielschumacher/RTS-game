@@ -189,7 +189,7 @@
             //set zoom target
              Vector3 zoomTarget = new Vector3(cameraTransform.localPosition.x, zoomHeight, cameraTransform.localPosition.z);
             //add vector for forward/backward zoom
-            zoomTarget -= zoomSpeed * (zoomHeight - cameraTransform.localPosition.y) * Vector3.forward;
+            zoomTarget -= zoomSpeed * (zoomHeight - cameraTransform.localPosition.y) * (Vector3.forward / 3);
 
             Vector3 smoothedPosition = Vector3.Lerp(cameraTransform.localPosition, zoomTarget, 0.125f);
             cameraTransform.localPosition = smoothedPosition;

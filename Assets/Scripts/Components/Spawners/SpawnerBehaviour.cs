@@ -9,7 +9,8 @@ namespace Game.Components.Spawners
         [SerializeField] private Transform spawnPoint = null;
         [SerializeField] private GameObject _formationPrefab;
 
-        public void Awake() {
+        public override void OnStartLocalPlayer()
+        {
             GameObject cameraRigBase = Camera.main.transform.parent.gameObject;
 
             cameraRigBase.transform.position = transform.position;
