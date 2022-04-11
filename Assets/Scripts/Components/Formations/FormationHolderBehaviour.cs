@@ -32,7 +32,7 @@ namespace Game.Components.Formations
             if (!hasAuthority) {
                 return;
             }
-
+            
             if(formationBehaviour.selectableGroup.isSelected == true) {
                 _navigationBehaviour.SetDestination(destination);
             }

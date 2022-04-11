@@ -10,12 +10,16 @@ namespace Game.Components.Formations
     [RequireComponent(typeof(AbstractSelectable))]
     public class FormationUnitBehaviour : NetworkBehaviour
     {
-        public Transform formationHolderPoint;
+        //public Transform formationHolderPoint;
         public static event Action<FormationUnitBehaviour> ServerOnFormationUnitSpawned;
         public static event Action<FormationUnitBehaviour> ServerOnFormationUnitDespawned;
         public static event Action<FormationUnitBehaviour> AuthorityOnFormationUnitSpawned;
         public static event Action<FormationUnitBehaviour> AuthorityOnFormationUnitDespawned;
         NavigationBehaviour _navigationBehaviour;
+        
+        public Vector3 localStartPosition;
+        public FormationHolderBehaviour formationHolderBehaviour;
+        public Vector3 formationOffset = Vector3.zero;
 
         [Server]
         public override void OnStartServer()
@@ -50,9 +54,11 @@ namespace Game.Components.Formations
         [ClientCallback]
         void Update()
         {
-            if (!hasAuthority) return;
+            //if (!hasAuthority && !isServer) return;
 
-            _navigationBehaviour.SetDestination(formationHolderPoint.position);
+            _navigationBehaviour.SetDestination(
+                formationHolderBehaviour.transform.TransformPoint(localStartPosition)
+            );
         }
     }
 }

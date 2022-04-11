@@ -34,15 +34,23 @@ namespace Game.Components.Formations
         [Command]
         void CmdSpawnFormationUnits()
         {
-            SpawnFormationHolder();
+            FormationHolderBehaviour formationHolderBehaviour = SpawnFormationHolder();
+            
+            List<Vector3> formationPositionList = _formation.GridFormation(
+                _unitAmount,
+                transform.position
+            );
 
             for (int unitNumber = 0; unitNumber < _unitAmount; unitNumber++)
             {
-                SpawnFormationUnit(unitNumber);
+                SpawnFormationUnit(
+                    formationHolderBehaviour,
+                    formationPositionList[unitNumber]
+                );
             }
         }
 
-        void SpawnFormationHolder()
+        FormationHolderBehaviour SpawnFormationHolder()
         {
             GameObject formationHolder = Instantiate(
                 _formationHolderPrefab,
@@ -57,10 +65,14 @@ namespace Game.Components.Formations
 
             InitSpawnedFormationHolder(formationHolder);
             RpcInitSpawnedFormationHolder(formationHolder);
+
+            return formationHolder.GetComponent<FormationHolderBehaviour>();
         }
 
-        void SpawnFormationUnit(int unitNumber)
-        {
+        void SpawnFormationUnit(
+            FormationHolderBehaviour formationHolderBehaviour,
+            Vector3 formationPosition
+        ) {
             GameObject formationUnit = Instantiate(
                 _formationUnitPrefab,
                 transform.position,
@@ -72,70 +84,70 @@ namespace Game.Components.Formations
                 connectionToClient
             );
 
-            Transform formationHolderPoint = SpawnFormationHolderPoint(unitNumber);
-
-            formationUnit.GetComponent<FormationUnitBehaviour>().formationHolderPoint = formationHolderPoint.transform;
+            //Transform formationHolder = SpawnFormationHolderPoint(unitNumber);
 
             InitSpawnedFormationUnit(
                 formationUnit,
-                unitNumber,
-                formationHolderPoint
+                formationHolderBehaviour,
+                formationPosition
             );
             RpcInitSpawnedFormationUnit(
                 formationUnit,
-                unitNumber,
-                formationHolderPoint
+                formationHolderBehaviour,
+                formationPosition
             );
         }
 
-        Transform SpawnFormationHolderPoint(int unitNumber)
-        {
-            GameObject formationHolderPoint = Instantiate(
-                _formationHolderPointPrefab
-            );
+        //Transform SpawnFormationHolderPoint(int unitNumber)
+        //{
+        //    GameObject formationHolderPoint = Instantiate(
+        //        _formationHolderPointPrefab
+        //    );
 
-            NetworkServer.Spawn(
-                formationHolderPoint.transform.gameObject, connectionToClient
-            );
+        //    NetworkServer.Spawn(
+        //        formationHolderPoint.transform.gameObject, connectionToClient
+        //    );
 
-            List<Vector3> positionList = _formation.GridFormation(
-                _unitAmount,
-                transform.position
-            );
+        //    List<Vector3> positionList = _formation.GridFormation(
+        //        _unitAmount,
+        //        transform.position
+        //    );
 
-            InitFormationHolderPoint(
-                formationHolderPoint,
-                positionList[unitNumber]
-            );
-            RpcInitFormationHolderPoint(
-                formationHolderPoint,
-                positionList[unitNumber]
-            );
+        //    InitFormationHolderPoint(
+        //        formationHolderPoint,
+        //        positionList[unitNumber]
+        //    );
+        //    RpcInitFormationHolderPoint(
+        //        formationHolderPoint,
+        //        positionList[unitNumber]
+        //    );
 
-            return formationHolderPoint.transform;
-        }
+        //    return formationHolderPoint.transform;
+        //}
 
-        void InitFormationHolderPoint(
-            GameObject formationHolderPoint,
-            Vector3 spawnPosition)
-        {
-            //formationHolderPoint.transform.parent = transform;
-            formationHolderPoint.transform.position = spawnPosition;
-            FormationHolderPointBehaviour formationHolderPointBehaviour = formationHolderPoint.GetComponent<FormationHolderPointBehaviour>();
-            formationHolderPointBehaviour.formationHolder = _formationHolderBehaviour;
-            formationHolderPointBehaviour.formationOffset = spawnPosition - transform.position;
-        }
+        //void InitFormationHolderPoint(
+        //    GameObject formationHolderPoint,
+        //    Vector3 spawnPosition)
+        //{
+        //    //formationHolderPoint.transform.parent = transform;
+        //    formationHolderPoint.transform.position = spawnPosition;
+        //    FormationHolderPointBehaviour formationHolderPointBehaviour = formationHolderPoint.GetComponent<FormationHolderPointBehaviour>();
+        //    formationHolderPointBehaviour.formationHolder = _formationHolderBehaviour;
+        //    formationHolderPointBehaviour.formationOffset = spawnPosition - transform.position;
+        //}
 
-        [ClientRpc]
-        void RpcInitFormationHolderPoint(
-            GameObject formationHolderPoint,
-            Vector3 spawnPosition
-        ) {
-            InitFormationHolderPoint(
-                formationHolderPoint,
-                spawnPosition
-            );
-        }
+        //[ClientRpc]
+        //void RpcInitFormationHolderPoint(
+        //    GameObject formationHolderPoint,
+        //    Vector3 spawnPosition
+        //) {
+        //    InitFormationHolderPoint(
+        //        formationHolderPoint,
+        //        spawnPosition
+        //    );
+        //}
+
+
 
         void InitSpawnedFormationHolder(GameObject formationHolder)
         {
@@ -153,30 +165,34 @@ namespace Game.Components.Formations
 
         void InitSpawnedFormationUnit(
             GameObject formationUnit,
-            int unitNumber,
-            Transform formationHolderPoint
+            FormationHolderBehaviour formationHolderBehaviour,
+            Vector3 formationPosition
         ) {
             _unitList.Add(formationUnit.transform.gameObject);
+
+            FormationUnitBehaviour formationUnitBehaviour = formationUnit.GetComponent<FormationUnitBehaviour>();
+            formationUnitBehaviour.formationHolderBehaviour = formationHolderBehaviour;
+            formationUnitBehaviour.transform.position = formationPosition;
+            formationUnitBehaviour.formationOffset = formationPosition - transform.position;
+            formationUnitBehaviour.localStartPosition = formationHolderBehaviour.transform.InverseTransformPoint(formationPosition);
 
             if (!hasAuthority) { return; }
 
             SelectableFormationUnit formationUnitSelectable = formationUnit.GetComponent<SelectableFormationUnit>();
-
             formationUnitSelectable.SetSelectableGroup(selectableGroup);
 
-            formationUnit.GetComponent<FormationUnitBehaviour>().formationHolderPoint = formationHolderPoint.transform;
         }
 
         [ClientRpc]
         void RpcInitSpawnedFormationUnit(
             GameObject formationUnit,
-            int unitNumber,
-            Transform formationHolderPoint
+            FormationHolderBehaviour formationHolderBehaviour,
+            Vector3 formationPosition
         ) {
             InitSpawnedFormationUnit(
                 formationUnit,
-                unitNumber,
-                formationHolderPoint
+                formationHolderBehaviour,
+                formationPosition
             );
         }
     }
