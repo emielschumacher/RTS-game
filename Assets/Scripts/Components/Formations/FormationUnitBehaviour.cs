@@ -57,7 +57,8 @@ namespace Game.Components.Formations
             //if (!hasAuthority && !isServer) return;
 
             _navigationBehaviour.SetDestination(
-                formationHolderBehaviour.transform.TransformPoint(localStartPosition)
+                formationHolderBehaviour.transform.rotation * localStartPosition + formationHolderBehaviour.transform.position
+                //formationHolderBehaviour.transform.TransformPoint(localStartPosition)
             );
         }
     }
