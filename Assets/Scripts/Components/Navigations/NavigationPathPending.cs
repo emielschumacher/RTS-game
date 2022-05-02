@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.AI;
-using Game.Components.Navigations;
 using Game.Components.Navigations.Contracts;
 
 namespace Game.Components.Navigations

@@ -9,7 +9,7 @@ namespace Game.Components.Formations
         public FormationHolderBehaviour formationHolder;
 
          private Vector3 position, forward, up;
-        
+
         [ClientCallback]
         void Update()
         {
@@ -20,23 +20,28 @@ namespace Game.Components.Formations
             CmdMove();
         }
 
-         void Start()
-         {
-             position = formationHolder.transform.InverseTransformPoint(transform.position);
-             forward = formationHolder.transform.InverseTransformDirection(transform.forward);
-             up = formationHolder.transform.InverseTransformDirection(transform.up);
-         }
+        void Start()
+        {
+            //position = formationHolder.transform.InverseTransformPoint(transform.position.normalized);
+            //forward = formationHolder.transform.InverseTransformDirection(transform.forward);
+            //up = formationHolder.transform.InverseTransformDirection(transform.up);
+        }
 
-         [Command]
-         void CmdMove()
-         {
-             var newpos = formationHolder.transform.TransformPoint(position);
-             var newfw = formationHolder.transform.TransformDirection(forward);
-             var newup = formationHolder.transform.TransformDirection(up);
-             var newrot = Quaternion.LookRotation(newfw, newup);
+        [Command]
+        void CmdMove()
+        {
+            //transform.position = formationHolder.transform.position + formationOffset;
 
-             transform.position = newpos;
-             transform.rotation = newrot;
-         }
+            //var newpos = formationHolder.transform.TransformPoint(position);
+            //var newfw = formationHolder.transform.TransformDirection(forward);
+            //var newup = formationHolder.transform.TransformDirection(up);
+            //var newrot = Quaternion.LookRotation(newfw, newup);
+
+            //transform.position = newpos.normalized;
+            //transform.rotation = newrot;
+
+            transform.position = formationHolder.transform.rotation * formationOffset + formationHolder.transform.position;
+            //transform.rotation = formationHolder.transform.rotation;
+        }
     }
 }
