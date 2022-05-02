@@ -37,7 +37,7 @@ namespace Game.Components.Navigations
         }
 
         [ClientCallback]
-        void Update()
+        void FixedUpdate()
         {
             if (isClient && hasAuthority) {
                 CmdMovement();

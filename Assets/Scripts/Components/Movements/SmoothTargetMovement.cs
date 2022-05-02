@@ -13,7 +13,7 @@ namespace Game.Components.Movements
             return Vector3.Lerp(
                 currentPosition,
                 targetPosition,
-                8f * deltaTime
+                3f * deltaTime
             );
         }
     }
