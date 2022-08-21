@@ -10,10 +10,10 @@ namespace Game.Components.Movements
             float deltaTime,
             float speed = 5f
         ) {
-            return Vector3.Lerp(
+            return Vector3.Slerp(
                 currentPosition,
                 targetPosition,
-                3f * deltaTime
+                2f * deltaTime
             );
         }
     }

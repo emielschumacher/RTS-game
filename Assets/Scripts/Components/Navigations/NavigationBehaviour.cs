@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
 using Game.Components.Navigations.Contracts;
-using Game.Components.Movements;
 using Mirror;
 
 namespace Game.Components.Navigations
@@ -37,12 +36,12 @@ namespace Game.Components.Navigations
         }
 
         [ClientCallback]
-        void Update()
+        void FixedUpdate()
         {
-            if (isClient && hasAuthority) {
-                CmdMovement();
-                CmdRotation();
-            }
+            if (!hasAuthority || !isClient) return;
+
+            CmdMovement();
+            CmdRotation();
         }
 
         [Command]
@@ -53,7 +52,7 @@ namespace Game.Components.Navigations
             transform.rotation = _navigationRotation.Rotation(
                 transform,
                 _navMeshAgent.nextPosition,
-                Time.deltaTime,
+                Time.fixedDeltaTime,
                 5f,
                 fullTurning
             );
@@ -67,14 +66,14 @@ namespace Game.Components.Navigations
             transform.position = _navigationMovement.Movement(
                 transform,
                 _navMeshAgent.nextPosition,
-                Time.deltaTime
+                Time.fixedDeltaTime
             );
         }
 
         void CheckMovement()
         {
             Vector3 dist = transform.position - lastPosition;
-            float currentSpeed = dist.magnitude / Time.deltaTime;
+            float currentSpeed = dist.magnitude / Time.fixedDeltaTime;
             lastPosition = transform.position;
 
             isMoving = currentSpeed > 1f;
@@ -86,9 +85,7 @@ namespace Game.Components.Navigations
         public void SetDestination(
             Vector3 destination
         ) {
-            if (!isClient && !hasAuthority) {
-                return;
-            }
+            if (!hasAuthority || !isClient) return;
 
             CmdSetDestination(destination);
         }
@@ -96,12 +93,6 @@ namespace Game.Components.Navigations
         [Command]
         public void CmdSetDestination(Vector3 destination)
         {
-            // if(!NavMesh.SamplePosition(
-            //     destination,
-            //     out NavMeshHit hit,
-            //     1f,
-            //     NavMesh.AllAreas
-            // )) return;
             _navMeshAgent.SetDestination(destination);
         }
     }

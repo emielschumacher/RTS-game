@@ -2,6 +2,7 @@ using UnityEngine;
 using Game.Components.Raycasts.Contracts;
 using Game.Components.Raycasts;
 using UnityEngine.Events;
+using Game.Components.Selections;
 
 namespace Game.Components.Navigations
 {
@@ -27,6 +28,11 @@ namespace Game.Components.Navigations
         }
 
         void HandleRightClick() {
+            if(!SelectionManager.instance.HasSelectedObjects())
+            {
+                return;
+            }
+
             RaycastHit hit = _raycastMousePosition.GetRaycastHit();
 
             groundMarker.transform.position = hit.point;

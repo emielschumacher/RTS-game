@@ -1,9 +1,8 @@
 using UnityEngine;
-using Game.Components.Selections.Contracts;
-using Game.Components.Selections.Selectables;
 using Game.Components.Networking;
 using UnityEngine.InputSystem;
 using Mirror;
+using Game.Components.Selections.Selectables.Contracts;
 
 namespace Game.Components.Selections
 {
@@ -99,7 +98,7 @@ namespace Game.Components.Selections
         {
             //foreach (var formationUnit in _myNetworkPlayer.GetMyFormationUnits())
             //{
-            //    AbstractSelectable selectable = formationUnit.GetComponent<AbstractSelectable>();
+            //    ISelectable selectable = formationUnit.GetComponent<ISelectable>();
 
             //    if (!_selectionBox.Contains(
             //        _camera.WorldToScreenPoint(selectable.transform.position)

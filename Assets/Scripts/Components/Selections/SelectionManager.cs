@@ -1,25 +1,50 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 using Game.Components.Selections.Contracts;
 using Game.Components.Selections.Selectables;
+using Game.Components.Selections.Selectables.Contracts;
+using System;
 
 namespace Game.Components.Selections
 {
     public class SelectionManager : MonoBehaviour, ISelectionManager
     {
         public static SelectionManager instance { get; private set; }
-        public List<AbstractSelectable> _selectedList = new List<AbstractSelectable>();
+
+        public List<ISelectable> selectedBuildings = new List<ISelectable>();
+        public List<ISelectable> selectedFormationUnits = new List<ISelectable>();
 
         private void Start()
         {
-            if (instance != null && instance != this)
-            {
+            if (instance != null && instance != this)  {
                 Destroy(this);
-            }
-            else
-            {
+            } else {
                 instance = this;
             }
+        }
+
+        public bool HasSelectedObjects()
+        {
+            return (
+                selectedBuildings.Count > 0
+                || selectedFormationUnits.Count > 0
+            );
+        }
+
+        private List<ISelectable> GetSelectedListForType(
+            ISelectable selectable
+        ) {
+            if(selectable is ISelectableFormationUnit)
+            {
+                return selectedFormationUnits;
+            }
+            
+            if(selectable is ISelectableBuidling)
+            {
+                return selectedBuildings;
+            }
+
+            throw new Exception("No list found for given type");
         }
 
         public void DragSelect(AbstractSelectable selectable) {
@@ -32,7 +57,8 @@ namespace Game.Components.Selections
         }
 
         public void ShiftClickSelect(AbstractSelectable selectable) {
-            if(AddSelectable(selectable)) {
+            if(AddSelectable(selectable))
+            {
                 return;
             }
 
@@ -41,7 +67,9 @@ namespace Game.Components.Selections
 
         public bool AddSelectable(AbstractSelectable selectable)
         {
-            if(_selectedList.Contains(selectable)) {
+            List<ISelectable> selectedList = GetSelectedListForType(selectable);
+
+            if(selectedList.Contains(selectable)) {
                 return false;
             }
 
@@ -49,44 +77,55 @@ namespace Game.Components.Selections
 
             if(selectableGroup != null) {
                 selectableGroup.SelectAll();
-                _selectedList.AddRange(selectableGroup.selectableList);
+                Debug.Log("SelectableGroup select all!");
 
-                return true;
+                selectedList.AddRange(selectableGroup.selectableList);
+
+                return false;
             }
 
-            _selectedList.Add(selectable);
-
+            selectedList.Add(selectable);
             selectable.HandleOnSelect();
-
             return true;
         }
 
         public void DeselectAll() {
-            _selectedList.ForEach(
-                (AbstractSelectable selectable) => {
+            HandleDeselectAll(selectedFormationUnits);
+            HandleDeselectAll(selectedBuildings);
+        }
+
+        private void HandleDeselectAll(List<ISelectable> selectedList) {
+            selectedList.ForEach(
+                (ISelectable selectable) => {
                     selectable.HandleOnDeselect();
                     selectable.GetSelectableGroup()?.DeselectAll();
                 }
             );
-            _selectedList.Clear();
+            selectedList.Clear();
         }
 
         public void Deselect(AbstractSelectable selectable)
         {
+            if(!selectable.netIdentity.hasAuthority)
+            {
+                return;
+            }
+
+            List<ISelectable> selectedList = GetSelectedListForType(selectable);
             SelectableGroup selectableGroup = selectable.GetSelectableGroup();
 
             if(selectableGroup != null) {
                 selectableGroup.DeselectAll();
 
-                foreach(AbstractSelectable selectableListItem in selectableGroup.selectableList) {
-                    _selectedList.Remove(selectableListItem);
+                foreach(ISelectable selectableListItem in selectableGroup.selectableList) {
+                    selectedList.Remove(selectableListItem);
                 }
 
                 return;
             }
             
             selectable.HandleOnDeselect();
-            _selectedList.Remove(selectable);
+            selectedList.Remove(selectable);
         }
     }
 }

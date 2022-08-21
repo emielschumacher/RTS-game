@@ -1,8 +1,8 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
-using Game.Components.Selections.Selectables;
 using Game.Components.Raycasts.Contracts;
 using Game.Components.Raycasts;
+using Game.Components.Selections.Selectables;
 
 namespace Game.Components.Selections {
     public class SelectionClickBehaviour : MonoBehaviour

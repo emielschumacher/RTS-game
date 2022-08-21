@@ -1,6 +1,5 @@
 using Game.Components.Selections.Selectables.Contracts;
 using System.Collections.Generic;
-using UnityEngine;
 using Mirror;
 
 namespace Game.Components.Selections.Selectables
@@ -8,7 +7,7 @@ namespace Game.Components.Selections.Selectables
     public class SelectableGroup : NetworkBehaviour, ISelectableGroup
     {
         public bool isSelected = false;
-        public List<AbstractSelectable> selectableList = new List<AbstractSelectable>();
+        public List<ISelectable> selectableList = new List<ISelectable>();
 
         public void SelectAll()
         {
@@ -16,7 +15,7 @@ namespace Game.Components.Selections.Selectables
 
             isSelected = true;
 
-            foreach(AbstractSelectable selectable in selectableList) {
+            foreach(ISelectable selectable in selectableList) {
                 selectable.HandleOnSelect();
             }
         }
@@ -27,7 +26,7 @@ namespace Game.Components.Selections.Selectables
 
             isSelected = false;
 
-            foreach(AbstractSelectable selectable in selectableList) {
+            foreach(ISelectable selectable in selectableList) {
                 selectable.HandleOnDeselect();
             }
         }

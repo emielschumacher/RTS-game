@@ -204,7 +204,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  formationHolderPoint: {fileID: 0}
+  localStartPosition: {x: 0, y: 0, z: 0}
+  formationHolderBehaviour: {fileID: 0}
+  formationOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &2091621706
 MonoBehaviour:
   m_ObjectHideFlags: 0

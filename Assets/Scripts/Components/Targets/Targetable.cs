@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Targatble : MonoBehaviour
+namespace Game.Components.Targets
 {
-    // Start is called before the first frame update
-    void Start()
+    public class Targetable : MonoBehaviour
     {
-        
-    }
+        [SerializeField] private Transform aimAtPoint = null;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public Transform GetAimAtPoint()
+        {
+            return aimAtPoint;
+        }
     }
 }

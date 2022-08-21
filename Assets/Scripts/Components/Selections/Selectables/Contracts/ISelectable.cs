@@ -1,6 +1,3 @@
-using UnityEngine;
-using Mirror;
-
 namespace Game.Components.Selections.Selectables.Contracts
 {
     public interface ISelectable

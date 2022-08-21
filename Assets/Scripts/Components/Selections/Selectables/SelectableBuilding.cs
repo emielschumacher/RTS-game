@@ -1,4 +1,4 @@
-using Game.Components.Selections.Contracts;
+using Game.Components.Selections.Selectables.Contracts;
 
 namespace Game.Components.Selections.Selectables
 {

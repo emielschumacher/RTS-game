@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEngine.Events;
 using Game.Components.Selections.Selectables.Contracts;
 using Mirror;
@@ -10,13 +9,13 @@ namespace Game.Components.Selections.Selectables
         public UnityEvent onSelectEvent;
         public UnityEvent onDeselectEvent;
         SelectableGroup _selectableGroup;
-        bool _isSelected = false;
+        public bool isSelected = false;
 
         public void HandleOnSelect()
         {
             if (!hasAuthority) { return; }
 
-            _isSelected = true;
+            isSelected = true;
             onSelectEvent?.Invoke();
         }
 
@@ -24,7 +23,7 @@ namespace Game.Components.Selections.Selectables
         {
             if (!hasAuthority) { return; }
 
-            _isSelected = false;
+            isSelected = false;
             onDeselectEvent?.Invoke();
         }
 
