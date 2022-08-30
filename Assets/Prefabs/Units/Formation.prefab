@@ -119,7 +119,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   isSelected: 0
-  selectableList: []
 --- !u!114 &-7450218095177376668
 MonoBehaviour:
   m_ObjectHideFlags: 0

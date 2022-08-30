@@ -5,7 +5,6 @@ namespace Game.Components.Navigations
     public class NavigationManager : MonoBehaviour
     {
         public static NavigationManager instance { get; private set; }
-        public NavigationMarkerBehaviour navigationMarkerBehaviour;
 
         private void Start()
         {
@@ -14,8 +13,6 @@ namespace Game.Components.Navigations
             } else {
                 instance = this;
             }
-
-            navigationMarkerBehaviour = GetComponent<NavigationMarkerBehaviour>();
         }
     }
 }

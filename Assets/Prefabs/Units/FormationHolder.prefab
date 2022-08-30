@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 2045134170546545022}
   - component: {fileID: 4848264298530336378}
   - component: {fileID: -4474262415312427257}
+  - component: {fileID: -1253464613815489349}
   m_Layer: 7
   m_Name: FormationHolder
   m_TagString: Untagged
@@ -86,7 +87,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2045134170546544998}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -144,7 +145,23 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   formationBehaviour: {fileID: 0}
-  _navigationBehaviour: {fileID: 0}
+  _navigationBehaviour: {fileID: 2045134170546545016}
+  _targeter: {fileID: -1253464613815489349}
+  onNewMarkerPositionSetEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: -1253464613815489349}
+        m_TargetAssemblyTypeName: Game.Components.Targets.Targeter, Project.Scripts
+        m_MethodName: CmdClearTarget
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!65 &2045134170546545022
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -194,7 +211,7 @@ MonoBehaviour:
   syncPosition: 1
   syncRotation: 1
   syncScale: 0
-  interpolatePosition: 0
+  interpolatePosition: 1
   interpolateRotation: 0
   interpolateScale: 0
   bufferTimeMultiplier: 1
@@ -204,3 +221,25 @@ MonoBehaviour:
   showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+--- !u!114 &-1253464613815489349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045134170546544998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fb4dabba0b604876b4ca22658d0bf07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  _target: {fileID: 0}
+  onTargetSetEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onTargetClearEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  chaseRange: 1

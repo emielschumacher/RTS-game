@@ -1,39 +1,44 @@
 using UnityEngine;
-using Game.Components.Raycasts.Contracts;
-using Game.Components.Raycasts;
 using UnityEngine.Events;
 using Game.Components.Selections;
 
 namespace Game.Components.Navigations
 {
-    public class NavigationMarkerBehaviour : MonoBehaviour
+    public class NavigationMarkerManager : MonoBehaviour
     {
+        public static NavigationMarkerManager instance { get; private set; }
+
         public GameObject groundMarker;
-        IRaycastMousePosition _raycastMousePosition;
         public UnityAction<Vector3> onNewMarkerPositionEvent;
 
-        public void Awake() {
-            _raycastMousePosition = new RaycastMousePosition();
+        private void Start()
+        {
+            if (instance != null && instance != this) {
+                Destroy(this);
+            } else {
+                instance = this;
+            }
         }
 
         void Update() {
             if(Input.GetMouseButtonDown(0))
                 HandleLeftClick();
-            if(Input.GetMouseButtonDown(1))
-                HandleRightClick();
         }
 
         void HandleLeftClick() {
+            ResetMarker();
+        }
+
+        public void ResetMarker()
+        {
             groundMarker.SetActive(false);
         }
 
-        void HandleRightClick() {
+        public void TrySetNewNavigationMarker(RaycastHit hit) {
             if(!SelectionManager.instance.HasSelectedObjects())
             {
                 return;
             }
-
-            RaycastHit hit = _raycastMousePosition.GetRaycastHit();
 
             groundMarker.transform.position = hit.point;
             groundMarker.SetActive(true);

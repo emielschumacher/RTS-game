@@ -6,6 +6,7 @@ using Mirror;
 
 namespace Game.Components.Formations
 {
+    [RequireComponent(typeof(SelectableGroup))]
     public class FormationBehaviour : NetworkBehaviour
     {
         public SelectableGroup selectableGroup { get; private set; }

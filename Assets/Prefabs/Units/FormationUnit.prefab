@@ -159,6 +159,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  isSelected: 0
 --- !u!114 &7208542937895123768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,8 +263,8 @@ MonoBehaviour:
   syncPosition: 1
   syncRotation: 1
   syncScale: 0
-  interpolatePosition: 0
-  interpolateRotation: 0
+  interpolatePosition: 1
+  interpolateRotation: 1
   interpolateScale: 0
   bufferTimeMultiplier: 1
   bufferSizeLimit: 64

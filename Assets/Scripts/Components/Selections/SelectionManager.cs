@@ -77,7 +77,6 @@ namespace Game.Components.Selections
 
             if(selectableGroup != null) {
                 selectableGroup.SelectAll();
-                Debug.Log("SelectableGroup select all!");
 
                 selectedList.AddRange(selectableGroup.selectableList);
 

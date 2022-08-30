@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using Game.Components.Navigations;
 using Game.Components.Selections.Selectables;
+using Game.Components.Targets;
 using Mirror;
 
 namespace Game.Components.Formations
@@ -20,6 +21,11 @@ namespace Game.Components.Formations
         public FormationHolderBehaviour formationHolderBehaviour;
         public Vector3 formationOffset = Vector3.zero;
 
+        void Start()
+        {
+            _navigationBehaviour = GetComponent<NavigationBehaviour>();
+        }
+
         [Server]
         public override void OnStartServer()
         {
@@ -35,8 +41,6 @@ namespace Game.Components.Formations
         [Client]
         public override void OnStartClient()
         {
-            _navigationBehaviour = GetComponent<NavigationBehaviour>();
-            
             if (!hasAuthority || !isClient) return;
 
             AuthorityOnFormationUnitSpawned?.Invoke(this);
@@ -49,12 +53,10 @@ namespace Game.Components.Formations
 
             AuthorityOnFormationUnitDespawned?.Invoke(this);
         }
-
-        [ClientCallback]
+        
+        [ServerCallback]
         void Update()
         {
-            if (!hasAuthority || !isClient) return;
-
             _navigationBehaviour.SetDestination(
                 formationHolderBehaviour.transform.rotation * localStartPosition + formationHolderBehaviour.transform.position
                 //formationHolderBehaviour.transform.TransformPoint(localStartPosition)

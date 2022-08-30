@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5901489744047199938}
-  - component: {fileID: 5901489744047199965}
   - component: {fileID: 1977199196}
   m_Layer: 0
   m_Name: NavigationManager
@@ -33,19 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5901489744047199965
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5901489744047199939}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71477574d845a408faf66ab286cc06f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  groundMarker: {fileID: 0}
 --- !u!114 &1977199196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,4 +44,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feec06399fab0443182d059e82de6757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  navigationMarkerBehaviour: {fileID: 5901489744047199965}

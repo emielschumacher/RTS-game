@@ -3,21 +3,35 @@ using Game.Components.Navigations;
 using Game.Components.Selections.Selectables;
 using Game.Components.Selections;
 using Game.Components.Formations;
+using Game.Components.Raycasts;
+using Game.Components.Targets;
 
 public class FormationCommandManager : MonoBehaviour
 {
+    public static FormationCommandManager instance { get; private set; }
+
+    RaycastMousePosition _raycastMousePosition = new RaycastMousePosition();
+
     public void Start()
     {
-        NavigationManager
-            .instance.navigationMarkerBehaviour
+        if (instance != null && instance != this) {
+            Destroy(this);
+        } else {
+            instance = this;
+        }
+
+        NavigationMarkerManager
+            .instance
             .onNewMarkerPositionEvent += HandleNewNavigationMarkerPositionEvent;
     }
 
     private void HandleNewNavigationMarkerPositionEvent(
         Vector3 destination
     ) {
-        foreach(AbstractSelectable selectedFormationUnit in SelectionManager.instance.selectedFormationUnits)
-        {
+        foreach(
+            AbstractSelectable selectedFormationUnit
+            in SelectionManager.instance.selectedFormationUnits
+        ) {
             selectedFormationUnit
                 .GetComponent<FormationUnitBehaviour>()
                 .formationHolderBehaviour
@@ -25,7 +39,6 @@ public class FormationCommandManager : MonoBehaviour
             ;
         }
     }
-
 
     void Update()
     {
@@ -37,9 +50,24 @@ public class FormationCommandManager : MonoBehaviour
 
     void HandleLeftClick()
     {
+        NavigationMarkerManager.instance.ResetMarker();
     }
 
     void HandleRightClick()
     {
+        RaycastHit hit = _raycastMousePosition.GetRaycastHit();
+
+        NavigationMarkerManager.instance.ResetMarker();
+
+        if (
+            hit.collider.TryGetComponent<Targetable>(out Targetable target)
+            && !target.hasAuthority
+        ) {
+            TargetManager.instance.TrySetTarget(target);
+
+            return;
+        }
+
+        NavigationMarkerManager.instance.TrySetNewNavigationMarker(hit);
     }
 }

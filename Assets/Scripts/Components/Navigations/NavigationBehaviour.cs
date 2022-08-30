@@ -35,59 +35,57 @@ namespace Game.Components.Navigations
             _navMeshAgent.updateRotation = false;
         }
 
-        [ClientCallback]
-        void FixedUpdate()
+        [ServerCallback]
+        //void FixedUpdate() // this is vissualy better
+        void Update()
         {
-            if (!hasAuthority || !isClient) return;
-
-            CmdMovement();
-            CmdRotation();
+            Movement();
+            Rotation();
         }
 
-        [Command]
-        void CmdRotation()
+        [Server]
+        void Rotation()
         {
             if(!isMoving) return;
 
             transform.rotation = _navigationRotation.Rotation(
                 transform,
                 _navMeshAgent.nextPosition,
-                Time.fixedDeltaTime,
+                Time.deltaTime,
                 5f,
                 fullTurning
             );
         }
 
-        [Command]
-        void CmdMovement()
+        [Server]
+        void Movement()
         {
             CheckMovement();
 
             transform.position = _navigationMovement.Movement(
                 transform,
                 _navMeshAgent.nextPosition,
-                Time.fixedDeltaTime
+                Time.deltaTime
             );
         }
 
+        [Server]
         void CheckMovement()
         {
             Vector3 dist = transform.position - lastPosition;
-            float currentSpeed = dist.magnitude / Time.fixedDeltaTime;
+            float currentSpeed = dist.magnitude / Time.deltaTime;
             lastPosition = transform.position;
 
             isMoving = currentSpeed > 1f;
 
             hasPathPending = _navigationPathPending.IsPathPending(_navMeshAgent);
         }
-
-        [Client]
+        
+        [Server]
         public void SetDestination(
             Vector3 destination
         ) {
-            if (!hasAuthority || !isClient) return;
-
-            CmdSetDestination(destination);
+            _navMeshAgent.SetDestination(destination);
         }
 
         [Command]
