@@ -35,5 +35,10 @@ namespace Game.Components.Formations
         {
             return _targeter;
         }
+
+        public NavigationBehaviour GetNavigationBehaviour()
+        {
+            return _navigationBehaviour;
+        }
     }
 }

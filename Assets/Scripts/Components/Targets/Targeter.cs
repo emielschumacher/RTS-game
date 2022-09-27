@@ -12,7 +12,7 @@ namespace Game.Components.Targets
     {
         [SerializeField] private Targetable _target;
         private NavigationBehaviour _navigationBehaviour;
-        public UnityEvent onTargetSetEvent;
+        public UnityEvent<Targetable> onTargetSetEvent;
         public UnityEvent onTargetClearEvent;
 
         public float chaseRange = 1f;
@@ -48,11 +48,9 @@ namespace Game.Components.Targets
             _navigationBehaviour.SetDestination(_target.transform.position);
         }
 
-
         [Command]
         public void CmdSetTarget(GameObject targetGameObject)
         {
-
             if (!targetGameObject.TryGetComponent<Targetable>(
                 out Targetable newTarget
             )) {
@@ -71,10 +69,11 @@ namespace Game.Components.Targets
 
         void SetTarget(Targetable newTarget)
         {
-            onTargetSetEvent.Invoke();
+            onTargetSetEvent.Invoke(newTarget);
             _target = newTarget;
         }
 
+        [Client]
         void ClearTarget()
         {
             onTargetClearEvent.Invoke();

@@ -2,8 +2,10 @@ using UnityEngine;
 using System;
 using Game.Components.Navigations;
 using Game.Components.Selections.Selectables;
-using Game.Components.Targets;
 using Mirror;
+using Game.Components.Formations.States.Contracts;
+using Game.Components.Formations.States;
+using Game.Components.Targets;
 
 namespace Game.Components.Formations
 {
@@ -15,15 +17,29 @@ namespace Game.Components.Formations
         public static event Action<FormationUnitBehaviour> ServerOnFormationUnitDespawned;
         public static event Action<FormationUnitBehaviour> AuthorityOnFormationUnitSpawned;
         public static event Action<FormationUnitBehaviour> AuthorityOnFormationUnitDespawned;
-        NavigationBehaviour _navigationBehaviour;
-        
-        public Vector3 localStartPosition;
         public FormationHolderBehaviour formationHolderBehaviour;
+
+        public Vector3 localStartPosition;
         public Vector3 formationOffset = Vector3.zero;
+
+        [SerializeField]
+        private IUnitState currentState;
+        private NavigationBehaviour _navigationBehaviour;
+
+        public HoldFormationPositionState holdFormationPositionState = new HoldFormationPositionState();
+        public AttackState attackState = new AttackState();
 
         void Start()
         {
             _navigationBehaviour = GetComponent<NavigationBehaviour>();
+            currentState = holdFormationPositionState;
+
+            formationHolderBehaviour.GetTargeter().onTargetSetEvent.AddListener(newTarget => HandleOnTargetSetEvent(newTarget));
+        }
+
+        public void HandleOnTargetSetEvent(Targetable newTarget)
+        {
+            currentState = attackState;
         }
 
         [Server]
@@ -57,10 +73,12 @@ namespace Game.Components.Formations
         [ServerCallback]
         void Update()
         {
-            _navigationBehaviour.SetDestination(
-                formationHolderBehaviour.transform.rotation * localStartPosition + formationHolderBehaviour.transform.position
-                //formationHolderBehaviour.transform.TransformPoint(localStartPosition)
-            );
+            currentState = currentState.DoState(this);
+        }
+
+        public NavigationBehaviour GetNavigationBehaviour()
+        {
+            return _navigationBehaviour;
         }
     }
 }

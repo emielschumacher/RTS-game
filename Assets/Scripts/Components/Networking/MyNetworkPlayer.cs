@@ -7,6 +7,7 @@ namespace Game.Components.Networking
 {
     public class MyNetworkPlayer : NetworkBehaviour
     {
+        // DIt moet in een formationManager denk ik
         [SerializeField] private List<FormationUnitBehaviour> _myFormationUnits = new List<FormationUnitBehaviour>();
 
         [Server]
