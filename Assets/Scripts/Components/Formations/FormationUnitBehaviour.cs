@@ -18,28 +18,28 @@ namespace Game.Components.Formations
         public static event Action<FormationUnitBehaviour> AuthorityOnFormationUnitSpawned;
         public static event Action<FormationUnitBehaviour> AuthorityOnFormationUnitDespawned;
         public FormationHolderBehaviour formationHolderBehaviour;
+        private FormationBehaviour _formationBehaviour;
 
         public Vector3 localStartPosition;
         public Vector3 formationOffset = Vector3.zero;
 
-        [SerializeField]
-        private IUnitState currentState;
         private NavigationBehaviour _navigationBehaviour;
-
-        public HoldFormationPositionState holdFormationPositionState = new HoldFormationPositionState();
-        public AttackState attackState = new AttackState();
 
         void Start()
         {
+            _formationBehaviour = formationHolderBehaviour.formationBehaviour;
             _navigationBehaviour = GetComponent<NavigationBehaviour>();
-            currentState = holdFormationPositionState;
 
-            formationHolderBehaviour.GetTargeter().onTargetSetEvent.AddListener(newTarget => HandleOnTargetSetEvent(newTarget));
+            formationHolderBehaviour
+                .GetTargeter()
+                .onTargetSetEvent
+                .AddListener(newTarget => HandleOnTargetSetEvent(newTarget))
+            ;
         }
 
         public void HandleOnTargetSetEvent(Targetable newTarget)
         {
-            currentState = attackState;
+            _formationBehaviour.SetFormationState(new AttackState());
         }
 
         [Server]
@@ -68,12 +68,6 @@ namespace Game.Components.Formations
             if (!hasAuthority || !isClient) return;
 
             AuthorityOnFormationUnitDespawned?.Invoke(this);
-        }
-        
-        [ServerCallback]
-        void Update()
-        {
-            currentState = currentState.DoState(this);
         }
 
         public NavigationBehaviour GetNavigationBehaviour()

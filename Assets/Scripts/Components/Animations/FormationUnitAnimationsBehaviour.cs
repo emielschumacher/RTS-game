@@ -1,11 +1,15 @@
 using UnityEngine;
 using Game.Components.Navigations;
+using Game.Components.Formations;
+using Game.Components.Formations.States.Contracts;
+using Game.Components.Formations.States;
 
 namespace Game.Components.Animations
 {
     public class FormationUnitAnimationsBehaviour : MonoBehaviour
     {
         [SerializeField] private AnimationsBehaviour _animationsBehaviour;
+        [SerializeField] private FormationUnitBehaviour _formationUnitBehaviour;
         [SerializeField] private NavigationBehaviour _navigationBehaviour;
 
         public AnimationClip idle;
@@ -14,9 +18,11 @@ namespace Game.Components.Animations
         public AnimationClip run;
         public AnimationClip attack;
         private int _frameInterval = 3;
+        public bool isAttacking = false;
 
         public void Start()
         {
+            _formationUnitBehaviour = GetComponent<FormationUnitBehaviour>();
             _animationsBehaviour.SetAnimationState(idle);
         }
 
@@ -24,6 +30,12 @@ namespace Game.Components.Animations
         {
             if (!(Time.frameCount % _frameInterval == 0))
             {
+                if(_formationUnitBehaviour.formationHolderBehaviour.formationBehaviour.GetCurrentState() is AttackState)
+                {
+                    _animationsBehaviour.SetAnimationState(attack);
+                    return;
+                }
+
                 if(_navigationBehaviour.isMoving == true) {
                     _animationsBehaviour.SetAnimationState(run);
                     return;

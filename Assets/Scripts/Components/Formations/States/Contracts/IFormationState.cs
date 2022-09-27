@@ -5,8 +5,8 @@ using Game.Components.Formations;
 
 namespace Game.Components.Formations.States.Contracts
 {
-    public interface IUnitState
+    public interface IFormationState
     {
-        public IUnitState DoState(FormationUnitBehaviour unit);
+        public IFormationState DoState(FormationBehaviour unit);
     }
 }

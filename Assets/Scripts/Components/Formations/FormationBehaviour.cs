@@ -3,6 +3,8 @@ using UnityEngine;
 using Game.Components.Formations.Contracts;
 using Game.Components.Selections.Selectables;
 using Mirror;
+using Game.Components.Formations.States.Contracts;
+using Game.Components.Formations.States;
 
 namespace Game.Components.Formations
 {
@@ -10,7 +12,7 @@ namespace Game.Components.Formations
     public class FormationBehaviour : NetworkBehaviour
     {
         public SelectableGroup selectableGroup { get; private set; }
-        List<GameObject> _unitList = new List<GameObject>();
+        List<FormationUnitBehaviour> _unitList = new List<FormationUnitBehaviour>();
         [SerializeField] int _unitAmount = 6;
         [SerializeField] GameObject _formationHolderPrefab;
         [SerializeField] GameObject _formationUnitPrefab;
@@ -18,10 +20,28 @@ namespace Game.Components.Formations
         FormationHolderBehaviour _formationHolderBehaviour;
         IFormation _formation = null;
 
+        [SerializeField]
+        private IFormationState _currentState;
+
+        public AttackState attackState = new AttackState();
+
         public void Start()
         {
             _formation = new Formation();
             selectableGroup = this.GetComponent<SelectableGroup>();
+
+            _currentState = new PadrolState();
+        }
+        
+        [ServerCallback]
+        void Update()
+        {
+            _currentState = _currentState.DoState(this);
+        }
+
+        public IFormationState GetCurrentState()
+        {
+            return _currentState;
         }
 
         [Client]
@@ -118,7 +138,7 @@ namespace Game.Components.Formations
             FormationHolderBehaviour formationHolderBehaviour,
             Vector3 formationPosition
         ) {
-            _unitList.Add(formationUnit.transform.gameObject);
+            _unitList.Add(formationUnit.transform.gameObject.GetComponent<FormationUnitBehaviour>());
 
             FormationUnitBehaviour formationUnitBehaviour = formationUnit.GetComponent<FormationUnitBehaviour>();
             formationUnitBehaviour.formationHolderBehaviour = formationHolderBehaviour;
@@ -144,6 +164,21 @@ namespace Game.Components.Formations
                 formationHolderBehaviour,
                 formationPosition
             );
+        }
+
+        public void SetFormationState(IFormationState formationState)
+        {
+            _currentState = formationState;
+        }
+
+        public List<FormationUnitBehaviour> GetFormationUnits()
+        {
+            return _unitList;
+        }
+
+        public FormationHolderBehaviour GetFormationHolderBehaviour()
+        {
+            return _formationHolderBehaviour;
         }
     }
 }

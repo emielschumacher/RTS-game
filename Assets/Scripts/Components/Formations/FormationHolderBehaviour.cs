@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using Game.Components.Navigations;
 using Mirror;
 using Game.Components.Targets;
@@ -13,7 +12,6 @@ namespace Game.Components.Formations
         public FormationBehaviour formationBehaviour;
         [SerializeField] private NavigationBehaviour _navigationBehaviour;
         [SerializeField] private Targeter _targeter;
-        public UnityEvent onNewMarkerPositionSetEvent;
 
         public void Start()
         {
@@ -26,7 +24,7 @@ namespace Game.Components.Formations
             Vector3 destination
         ) {
             if(formationBehaviour.selectableGroup.isSelected == true) {
-                onNewMarkerPositionSetEvent.Invoke();
+                _targeter.CmdClearTarget();
                 _navigationBehaviour.CmdSetDestination(destination);
             }
         }

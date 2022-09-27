@@ -1,22 +1,42 @@
 ﻿using UnityEngine;
-using System.Collections;
-using Game.Components.Formations;
 using Game.Components.Formations.States.Contracts;
+using Game.Components.Formations.Actions;
+using Game.Components.Targets;
 
 namespace Game.Components.Formations.States
 {
-    public class AttackState : IUnitState
+    public class AttackState : IFormationState
     {
-        public IUnitState DoState(FormationUnitBehaviour unit)
+        private FormationUnitInFormationPositionAction _formationUnitInFormationPositionAction = new FormationUnitInFormationPositionAction();
+
+        public IFormationState DoState(FormationBehaviour formationBehaviour)
         {
-            Debug.Log("Attacking!");
+            FormationHolderBehaviour formationHolderBehaviour = formationBehaviour.GetFormationHolderBehaviour();
 
-            //if(onEnemyDiedEvent)
-            //{
-            //    return holdFormationPositionState;
-            //}
+            foreach(FormationUnitBehaviour formationUnitBehaviour in formationBehaviour.GetFormationUnits()) {
 
-            return unit.attackState;
+                Targetable target = formationHolderBehaviour.GetTargeter().GetTarget();
+                
+                float distanceToTarget = Vector3.Distance(
+                    target.transform.position,
+                    formationUnitBehaviour.transform.position
+                );
+
+                if(distanceToTarget > 3f)
+                {
+                    _formationUnitInFormationPositionAction.DoAction(
+                        formationUnitBehaviour,
+                        formationHolderBehaviour
+                    );
+
+                    continue;
+                }
+
+                Debug.Log("ATTAAACKK!!!");
+                //formationUnitBehaviour.formationUnitAnimationsBehaviour.isAttacking = true;
+            }
+            
+            return this;
         }
     }
 }
